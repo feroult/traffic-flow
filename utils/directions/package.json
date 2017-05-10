@@ -1,0 +1,15 @@
+{
+  "name": "directions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fernando Ultremare <feroult@gmail.com> (http://github.com/feroult)",
+  "license": "ISC",
+  "dependencies": {
+    "@google/maps": "^0.3.1",
+    "@mapbox/polyline": "^0.2.0"
+  }
+}
