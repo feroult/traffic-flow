@@ -9,3 +9,7 @@
 "@mapbox/polyline@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@mapbox/polyline/-/polyline-0.2.0.tgz#6e25980744aa22331f94b645a542c02d3fcfee97"
+
+linear-solve@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/linear-solve/-/linear-solve-1.2.1.tgz#6dcd0a5b0fe8547b7a5971fe2f77221c8c96a20e"
