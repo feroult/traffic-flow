@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Fernando Ultremare <feroult@gmail.com> (http://github.com/feroult)",
   "license": "ISC",
@@ -12,5 +12,8 @@
     "@google/maps": "^0.3.1",
     "@mapbox/polyline": "^0.2.0",
     "linear-solve": "^1.2.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.3.0"
   }
 }
