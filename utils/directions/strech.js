@@ -5,7 +5,7 @@ class Strech {
         this.traffic = 0;
     }
 
-    currentTrafficLoad() {
+    trafficLoad() {
         return this.traffic / this.maxTraffic;
     }
 

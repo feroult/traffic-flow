@@ -15,12 +15,12 @@ describe('Strech', () => {
     });
 
     it('has no traffic load', () => {
-        assert.equal(0, strech.currentTrafficLoad());
+        assert.equal(0, strech.trafficLoad());
     });
 
     it('enters a vehicle and gets a bit of traffic', () => {
         strech.enterVehicle({length: 3});
-        assert.equal(3 / (2 * 9), strech.currentTrafficLoad());
+        assert.equal(3 / (2 * 9), strech.trafficLoad());
     });
 
 });
