@@ -2,7 +2,6 @@ const assert = require('assert');
 
 const Strech = require('../strech');
 
-
 describe('Strech', () => {
 
     let strech;
