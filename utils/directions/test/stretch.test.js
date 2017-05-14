@@ -34,6 +34,4 @@ describe('Strech', () => {
         assert.ok(strech.isFull());
     });
 
-    // cant enter when its full
-
 });
