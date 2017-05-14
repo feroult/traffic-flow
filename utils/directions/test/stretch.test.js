@@ -29,5 +29,11 @@ describe('Strech', () => {
         assert.equal(3 / (2 * 9), strech.trafficLoad());
     });
 
+    it('can be full', () => {
+        strech.enterVehicle({length: 18});
+        assert.ok(strech.isFull());
+    });
+
+    // cant enter when its full
 
 });

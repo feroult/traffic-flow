@@ -2,7 +2,7 @@ const assert = require('assert');
 
 const Road = require('../road');
 
-const roadAttrs = {
+const attrs = {
     length: 10,
     stretches: [{
         velocity: 40,
@@ -24,7 +24,14 @@ const roadAttrs = {
 
 describe('Road', () => {
 
-    it('says hello', () => {
-        assert.equal('hello', Road());
+    let road;
+
+    beforeEach(() => {
+        road = new Road(attrs);
     });
+
+    it('has even strech lengths', () => {
+        assert.equal(2, road.strechLength());
+    });
+    
 });

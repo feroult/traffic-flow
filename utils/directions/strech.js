@@ -17,6 +17,10 @@ class Strech {
         this.traffic -= vehicle.length;
     }
 
+    isFull() {
+        return this.traffic >= this.maxTraffic;
+    }
+
 }
 
 module
