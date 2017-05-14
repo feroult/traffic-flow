@@ -23,5 +23,4 @@ class Strech {
 
 }
 
-module
-    .exports = Strech;
+module.exports = Strech;
