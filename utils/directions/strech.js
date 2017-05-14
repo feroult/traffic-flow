@@ -13,6 +13,10 @@ class Strech {
         this.traffic += vehicle.length;
     }
 
+    exitVehicle(vehicle) {
+        this.traffic -= vehicle.length;
+    }
+
 }
 
 module
