@@ -26,16 +26,21 @@ const roadAttrs = {
 
 describe('Simulator', () => {
 
-    it('simulates one vehicle', () => {
+    it('simulates one vehicle', (done) => {
         const road = new Road(roadAttrs);
         const sim = new Simulator(road);
 
-        sim.enterVehicle(new Vehicle({length: 3}));
+        const vehicle = new Vehicle({
+            targetVelocity: 100,
+            length: 3
+        });
+
+        sim.enterVehicle(vehicle);
 
         sim.run().then(() => {
             assert.ok(true);
+            done();
         });
-
     });
 
 });
