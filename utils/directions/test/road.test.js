@@ -5,6 +5,7 @@ const Vehicle = require('../vehicle');
 
 const attrs = {
     length: 10,
+    sleep: 1,
     stretches: [{
         velocity: 40,
         lanes: 2
