@@ -2,7 +2,7 @@ const assert = require('assert');
 
 const Strech = require('../strech');
 
-describe('Strech', () => {
+describe('Stretch', () => {
 
     let strech;
 
