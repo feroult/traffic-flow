@@ -1,7 +1,8 @@
 class Strech {
 
     constructor(attrs) {
-        this.maxTraffic = attrs.lanes * attrs.length;
+        Object.assign(this, attrs);
+        this.maxTraffic = this.lanes * this.length;
         this.traffic = 0;
     }
 

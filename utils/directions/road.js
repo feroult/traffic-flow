@@ -4,11 +4,11 @@ class Road {
 
     constructor(attrs) {
         this.length = attrs.length;
-        this.streches = attrs.stretches.map(strech => new Strech(strech));
-    }
-
-    strechLength() {
-        return this.length / this.streches.length;
+        this.stretchesLength = attrs.length / attrs.stretches.length;
+        this.stretches = attrs.stretches.map(strech => {
+            strech.length = this.stretchesLength;
+            new Strech(strech)
+        });
     }
 
 }

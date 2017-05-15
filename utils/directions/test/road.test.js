@@ -31,7 +31,7 @@ describe('Road', () => {
     });
 
     it('has even strech lengths', () => {
-        assert.equal(2, road.strechLength());
+        assert.equal(2, road.stretchesLength);
     });
-    
+
 });

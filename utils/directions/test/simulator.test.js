@@ -35,6 +35,8 @@ describe('Simulator', () => {
             length: 3
         });
 
+        console.log('x', vehicle);
+
         sim.addVehicle(vehicle);
 
         sim.finish(() => {
