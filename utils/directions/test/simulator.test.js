@@ -35,9 +35,9 @@ describe('Simulator', () => {
             length: 3
         });
 
-        sim.enterVehicle(vehicle);
+        sim.addVehicle(vehicle);
 
-        sim.run().then(() => {
+        sim.finish(() => {
             assert.ok(true);
             done();
         });

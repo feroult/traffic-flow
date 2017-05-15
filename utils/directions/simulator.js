@@ -1,10 +1,12 @@
 class Simulator {
 
-    enterVehicle(vehicle) {
+    addVehicle(vehicle) {
+
+        new Journey(this, vehicle);
 
     }
 
-    run() {
+    finish() {
         return Promise.resolve(true);
     }
 
