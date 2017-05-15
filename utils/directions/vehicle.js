@@ -4,23 +4,22 @@ class Vehicle {
         Object.assign(this, attrs);
     }
 
-    enter(sim) {
-        this.sim = sim;
+    enter(road) {
+        this.road = road;
         this.strechIndex = 0;
-        this.timestamp = new Time().getTime();
+        this.timestamp = new Date().getTime();
         this.velocity = this.computeVelocity();
 
-        setTimeout(this.move, sim.defaultSleepMs);
+        setTimeout(this.move, this.road.sleep);
     }
 
     move() {
-        const elapsed = new Time().getTime() - this.timestamp;
-
-        setTimeout(this.move, sim.defaultSleepMs);
+        const elapsed = new Date().getTime() - this.timestamp;
+        setTimeout(this.move, this.road.sleep);
     }
 
     computeVelocity() {
-        const streech = this.sim.road.getStreech(this.strechIndex);
+        const stretch = this.road.getStretch(this.strechIndex);
     }
 
 }

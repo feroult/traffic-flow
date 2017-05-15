@@ -3,6 +3,7 @@ const Strech = require('./strech');
 class Road {
 
     constructor(attrs) {
+        this.vehicles = 0;
         this.length = attrs.length;
         this.stretchesLength = attrs.length / attrs.stretches.length;
         this.stretches = attrs.stretches.map(strech => {
@@ -10,6 +11,20 @@ class Road {
             new Strech(strech)
         });
     }
+
+    getStretch(index) {
+        return this.stretches[index];
+    }
+
+    addVehicle(vehicle) {
+        this.vehicles++;
+        vehicle.enter(this);
+    }
+
+    finish(cb) {
+        cb && cb();
+    }
+
 
 }
 

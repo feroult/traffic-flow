@@ -1,6 +1,7 @@
 const assert = require('assert');
 
 const Road = require('../road');
+const Vehicle = require('../vehicle');
 
 const attrs = {
     length: 10,
@@ -32,6 +33,20 @@ describe('Road', () => {
 
     it('has even strech lengths', () => {
         assert.equal(2, road.stretchesLength);
+    });
+
+    it('simulates one vehicle', (done) => {
+        const vehicle = new Vehicle({
+            targetVelocity: 100,
+            length: 3
+        });
+
+        road.addVehicle(vehicle);
+
+        road.finish(() => {
+            assert.ok(true);
+            done();
+        });
     });
 
 });
