@@ -1,14 +1,17 @@
 class Simulator {
 
     addVehicle(vehicle) {
-
         new Journey(this, vehicle);
-
     }
 
-    finish() {
-        return Promise.resolve(true);
+    finish(cb) {
+        cb && cb();
     }
+
+}
+
+class Journey {
+
 
 }
 
