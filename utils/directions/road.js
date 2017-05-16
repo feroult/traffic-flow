@@ -13,8 +13,45 @@ class Road {
     }
 
     getStretch(distance) {
-        const index = Math.floor(distance / this.stretchesLength);
-        return this.stretches[index];
+        return this.stretches[this.getStretchIndex(distance)];
+    }
+
+    getStretchIndex(distance) {
+        return Math.floor(distance / this.stretchesLength);
+    }
+
+    computeDistance(from, elapsedHours, targetVelocity) {
+        let distance = from;
+        let hours = elapsedHours;
+
+        let stretch, index, projectedIndex;
+
+        do {
+            index = this.getStretchIndex(distance);
+
+            if (index >= this.stretches.length) {
+                break;
+            }
+
+            stretch = this.getStretch(distance);
+
+            const velocity = stretch.computeVelocity(targetVelocity);
+            const delta = velocity * hours;
+
+            projectedIndex = this.getStretchIndex(distance + delta);
+
+            if (projectedIndex === index) {
+                distance += delta;
+            } else {
+                const partialDelta = ((index + 1) * this.stretchesLength) - distance;
+                const partialHours = partialDelta / velocity;
+                hours -= partialHours;
+                distance += partialDelta;
+            }
+
+        } while (index !== projectedIndex);
+
+        return distance;
     }
 
     addVehicle(vehicle) {

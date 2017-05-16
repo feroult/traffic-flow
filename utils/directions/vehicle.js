@@ -13,7 +13,6 @@ class Vehicle {
     }
 
     scheduleNextMove() {
-        this.velocity = this.computeVelocity();
         this.timestamp = new Date().getTime();
         setTimeout(() => this.move(), this.road.sleep);
     }
@@ -22,7 +21,7 @@ class Vehicle {
         const elapsedHours = ((new Date().getTime() - this.timestamp)) * this.road.fastForward / 1000 / 60 / 60;
 
         this.time += elapsedHours;
-        this.distance += this.velocity * elapsedHours;
+        this.distance = this.road.computeDistance(this.distance, elapsedHours, this.targetVelocity);
 
         this.emitter(this);
 
@@ -31,11 +30,6 @@ class Vehicle {
         } else {
             this.scheduleNextMove();
         }
-    };
-
-    computeVelocity() {
-        const stretch = this.road.getStretch(this.distance);
-        return stretch.computeVelocity(this.targetVelocity);
     }
 
 }

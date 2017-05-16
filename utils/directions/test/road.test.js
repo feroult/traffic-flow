@@ -47,6 +47,20 @@ describe('Road', () => {
         assert.equal(2, road.stretchesLength);
     });
 
+    it('computes the traveled distance across two stretches', () => {
+        const road = new Road({
+            length: 100,
+            stretches: [{
+                velocity: 100,
+            }, {
+                velocity: 50,
+            }]
+        });
+
+        const distance = road.computeDistance(40, 0.5, 100);
+        assert.equal(distance, 70);
+    });
+
     it('simulates one vehicle with one stretch', (done) => {
         const road = new Road({
             length: 100,
@@ -69,7 +83,7 @@ describe('Road', () => {
         road.finish(() => {
             var lastIndex = events.length - 1;
             assert.isAbove(lastIndex, 0);
-            assert.isAtLeast(events[lastIndex].distance, 100);
+            assert.equal(events[lastIndex].distance, 100);
             assert.isAtLeast(events[lastIndex].time, 1);
             done();
         });
@@ -79,12 +93,12 @@ describe('Road', () => {
         const road = new Road({
             length: 100,
             sleep: 1,
-            fastForward: 1000 * 60 * 2,
+            fastForward: 1000 * 60 * 3,
             stretches: [{
                 velocity: 100,
                 lanes: 1
             }, {
-                velocity: 25,
+                velocity: 50,
                 lanes: 1
             }]
         });
@@ -100,8 +114,8 @@ describe('Road', () => {
         road.finish(() => {
             var lastIndex = events.length - 1;
             assert.isAbove(lastIndex, 0);
-            assert.isAtLeast(events[lastIndex].distance, 100);
-            assert.isAtLeast(events[lastIndex].time, 2);
+            assert.equal(events[lastIndex].distance, 100);
+            assert.isAtLeast(events[lastIndex].time, 1.5);
             done();
         });
     });
