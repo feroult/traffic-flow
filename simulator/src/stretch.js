@@ -1,9 +1,12 @@
+const TRAFFIC_SLOWDOWN_THRESHOLD = 0.3;
+
 class Stretch {
 
     constructor(attrs) {
-        Object.assign(this, attrs);
-        this.maxTraffic = this.lanes * this.length;
         this.traffic = 0;
+        this.maxTraffic = attrs.lanes * attrs.length;
+
+        Object.assign(this, attrs);
     }
 
     trafficLoad() {
@@ -23,10 +26,14 @@ class Stretch {
     }
 
     computeVelocity(targetVelocity) {
-        if (this.velocity < targetVelocity) {
-            return this.velocity;
+        let velocity = (this.velocity < targetVelocity) ? this.velocity : targetVelocity;
+
+        if (this.trafficLoad() > TRAFFIC_SLOWDOWN_THRESHOLD) {
+            const slowDownFactor = (this.trafficLoad() - TRAFFIC_SLOWDOWN_THRESHOLD ) / ( 1 - TRAFFIC_SLOWDOWN_THRESHOLD);
+            return velocity * (1 - slowDownFactor);
         }
-        return targetVelocity;
+
+        return velocity;
     }
 
 }

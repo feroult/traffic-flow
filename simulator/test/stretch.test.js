@@ -15,19 +15,19 @@ describe('Stretch', () => {
         });
 
         it('has no traffic load', () => {
-            assert.equal(0, stretch.trafficLoad());
+            assert.equal(stretch.trafficLoad(), 0);
         });
 
         it('enters a vehicle and gets more traffic', () => {
             stretch.enterVehicle({length: 3});
-            assert.equal(3 / (2 * 9), stretch.trafficLoad());
+            assert.equal(stretch.trafficLoad(), 3 / (2 * 9));
         });
 
         it('exits a vehicle and gets less traffic', () => {
             stretch.enterVehicle({length: 3});
             stretch.enterVehicle({length: 3});
             stretch.exitVehicle({length: 3});
-            assert.equal(3 / (2 * 9), stretch.trafficLoad());
+            assert.equal(stretch.trafficLoad(), 3 / (2 * 9));
         });
 
         it('can be full', () => {
@@ -39,7 +39,7 @@ describe('Stretch', () => {
 
     describe('#computeVelocity', () => {
         it('whithout a road limit', () => {
-            const stretch = new Stretch();
+            const stretch = new Stretch({lanes: 1, length: 1});
             assert.equal(100, stretch.computeVelocity(100));
         });
 
@@ -47,7 +47,17 @@ describe('Stretch', () => {
             const stretch = new Stretch({
                 velocity: 50
             });
-            assert.equal(50, stretch.computeVelocity(100));
+            assert.equal(stretch.computeVelocity(100), 50);
+        });
+
+        it('with traffic', () => {
+            const stretch = new Stretch({
+                velocity: 100,
+                lanes: 1,
+                length: 10,
+                traffic: 5.1
+            });
+            assert.equal(stretch.computeVelocity(100), 70);
         });
     });
 

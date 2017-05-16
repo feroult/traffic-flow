@@ -47,7 +47,7 @@ describe('Road', () => {
         assert.equal(2, road.stretchesLength);
     });
 
-    it('computes the traveled distance across two stretches', () => {
+    it('computes the distance traveled across two stretches', () => {
         const road = new Road({
             length: 100,
             stretches: [{
@@ -59,6 +59,20 @@ describe('Road', () => {
 
         const distance = road.computeDistance(40, 0.5, 100);
         assert.equal(distance, 70);
+    });
+
+    it('computes the distance traveled across a stretch with traffic', () => {
+        const road = new Road({
+            length: 100,
+            stretches: [{
+                velocity: 100,
+                lanes: 1,
+                traffic: 51
+            }]
+        });
+
+        const distance = road.computeDistance(10, 0.5, 100);
+        assert.equal(distance, 45);
     });
 
     it('simulates one vehicle with one stretch', (done) => {
