@@ -1,12 +1,12 @@
 class Vehicle {
-
+    
     constructor(attrs) {
         Object.assign(this, attrs);
     }
 
     enter(road) {
         this.road = road;
-        this.strechIndex = 0;
+        this.stretchIndex = 0;
         this.scheduleNextMove();
     }
 
@@ -19,8 +19,8 @@ class Vehicle {
     move() {
         // const elapsed = new Date().getTime() - this.timestamp;
         this.emitter(this, {});
-        this.strechIndex++;
-        if (this.strechIndex > 0) {
+        this.stretchIndex++;
+        if (this.stretchIndex > 0) {
             this.road.removeVehicle(this);
         } else {
             this.scheduleNextMove();
@@ -28,7 +28,7 @@ class Vehicle {
     };
 
     computeVelocity() {
-        const stretch = this.road.getStretch(this.strechIndex);
+        const stretch = this.road.getStretch(this.stretchIndex);
         return stretch.computeVelocity(this.targetVelocity);
     }
 
