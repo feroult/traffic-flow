@@ -22,6 +22,10 @@ class Strech {
         return this.traffic >= this.maxTraffic;
     }
 
+    computeVelocity(targetVelocity) {
+        return targetVelocity;
+    }
+
 }
 
 module.exports = Strech;

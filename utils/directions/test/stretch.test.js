@@ -4,34 +4,38 @@ const Strech = require('../strech');
 
 describe('Stretch', () => {
 
-    let strech;
+    let stretch;
 
     beforeEach(() => {
-        strech = new Strech({
+        stretch = new Strech({
             lanes: 2,
             length: 9
         });
     });
 
     it('has no traffic load', () => {
-        assert.equal(0, strech.trafficLoad());
+        assert.equal(0, stretch.trafficLoad());
     });
 
     it('enters a vehicle and gets more traffic', () => {
-        strech.enterVehicle({length: 3});
-        assert.equal(3 / (2 * 9), strech.trafficLoad());
+        stretch.enterVehicle({length: 3});
+        assert.equal(3 / (2 * 9), stretch.trafficLoad());
     });
 
     it('exits a vehicle and gets less traffic', () => {
-        strech.enterVehicle({length: 3});
-        strech.enterVehicle({length: 3});
-        strech.exitVehicle({length: 3});
-        assert.equal(3 / (2 * 9), strech.trafficLoad());
+        stretch.enterVehicle({length: 3});
+        stretch.enterVehicle({length: 3});
+        stretch.exitVehicle({length: 3});
+        assert.equal(3 / (2 * 9), stretch.trafficLoad());
     });
 
     it('can be full', () => {
-        strech.enterVehicle({length: 18});
-        assert.ok(strech.isFull());
+        stretch.enterVehicle({length: 18});
+        assert.ok(stretch.isFull());
+    });
+
+    it('computes the current velocitoy', () => {
+        assert.equal(100, stretch.computeVelocity(100));
     });
 
 });

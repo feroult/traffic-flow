@@ -7,9 +7,12 @@ class Vehicle {
     enter(road) {
         this.road = road;
         this.strechIndex = 0;
-        this.timestamp = new Date().getTime();
-        this.velocity = this.computeVelocity();
+        this.scheduleNextMove();
+    }
 
+    scheduleNextMove() {
+        this.velocity = this.computeVelocity();
+        this.timestamp = new Date().getTime();
         setTimeout(() => this.move(), this.road.sleep);
     }
 
@@ -20,13 +23,13 @@ class Vehicle {
         if (this.strechIndex > 0) {
             this.road.removeVehicle(this);
         } else {
-            setTimeout(this.move, this.road.sleep);
+            this.scheduleNextMove();
         }
     };
 
     computeVelocity() {
-        // const stretch = this.road.getStretch(this.strechIndex);
-        return 0;
+        const stretch = this.road.getStretch(this.strechIndex);
+        return stretch.computeVelocity(this.targetVelocity);
     }
 
 }
