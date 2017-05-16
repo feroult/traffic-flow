@@ -75,16 +75,16 @@ describe('Road', () => {
         });
     });
 
-    xit('simulates one vehicle on a road with two stretches', (done) => {
+    it('simulates one vehicle on a road with two stretches', (done) => {
         const road = new Road({
             length: 100,
             sleep: 1,
-            fastForward: 1000 * 60 * 3,
+            fastForward: 1000 * 60 * 2,
             stretches: [{
                 velocity: 100,
                 lanes: 1
             }, {
-                velocity: 10,
+                velocity: 25,
                 lanes: 1
             }]
         });
@@ -100,7 +100,8 @@ describe('Road', () => {
         road.finish(() => {
             var lastIndex = events.length - 1;
             assert.isAbove(lastIndex, 0);
-            assert.isAtLeast(events[lastIndex].position.distance, 100);
+            assert.isAtLeast(events[lastIndex].distance, 100);
+            assert.isAtLeast(events[lastIndex].time, 2);
             done();
         });
     });

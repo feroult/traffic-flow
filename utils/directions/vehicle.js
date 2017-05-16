@@ -8,7 +8,7 @@ class Vehicle {
         this.road = road;
         this.time = 0;
         this.distance = 0;
-        this.stretchIndex = 0;
+
         this.scheduleNextMove();
     }
 
@@ -26,7 +26,7 @@ class Vehicle {
 
         this.emitter(this);
 
-        if (this.distance >= 100) {
+        if (this.distance >= this.road.length) {
             this.road.removeVehicle(this);
         } else {
             this.scheduleNextMove();
@@ -34,7 +34,7 @@ class Vehicle {
     };
 
     computeVelocity() {
-        const stretch = this.road.getStretch(this.stretchIndex);
+        const stretch = this.road.getStretch(this.distance);
         return stretch.computeVelocity(this.targetVelocity);
     }
 

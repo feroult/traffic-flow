@@ -1,4 +1,4 @@
-const Strech = require('./strech');
+const Stretch = require('./stretch');
 
 class Road {
 
@@ -8,11 +8,12 @@ class Road {
         this.stretchesLength = attrs.length / attrs.stretches.length;
         this.stretches = attrs.stretches.map(strech => {
             strech.length = this.stretchesLength;
-            return new Strech(strech);
+            return new Stretch(strech);
         });
     }
 
-    getStretch(index) {
+    getStretch(distance) {
+        const index = Math.floor(distance / this.stretchesLength);
         return this.stretches[index];
     }
 

@@ -1,4 +1,4 @@
-class Strech {
+class Stretch {
 
     constructor(attrs) {
         Object.assign(this, attrs);
@@ -23,9 +23,12 @@ class Strech {
     }
 
     computeVelocity(targetVelocity) {
+        if (this.velocity < targetVelocity) {
+            return this.velocity;
+        }
         return targetVelocity;
     }
 
 }
 
-module.exports = Strech;
+module.exports = Stretch;
