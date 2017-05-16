@@ -34,7 +34,7 @@ describe('Stretch', () => {
         assert.ok(stretch.isFull());
     });
 
-    it('computes the current velocitoy', () => {
+    it('computes the current velocity', () => {
         assert.equal(100, stretch.computeVelocity(100));
     });
 

@@ -3,9 +3,10 @@ const assert = require('assert');
 const Road = require('../road');
 const Vehicle = require('../vehicle');
 
-const attrs = {
+const completeRoadAttrs = {
     length: 10,
     sleep: 1,
+    fastForward: 1000 * 60 * 6,
     stretches: [{
         velocity: 40,
         lanes: 2
@@ -26,23 +27,33 @@ const attrs = {
 
 describe('Road', () => {
 
-    let road;
     let positions;
 
     const emitter = (vehicle, position) => {
+        // console.log('p', position);
         positions.push({vehicle, position});
     };
 
     beforeEach(() => {
-        road = new Road(attrs);
         positions = [];
     });
 
     it('has even stretch lengths', () => {
+        const road = new Road(completeRoadAttrs);
         assert.equal(2, road.stretchesLength);
     });
 
-    it('simulates one vehicle', (done) => {
+    it('simulates one vehicle on a simple road', (done) => {
+        const road = new Road({
+            length: 100,
+            sleep: 1,
+            fastForward: 1000 * 60 * 2,
+            stretches: [{
+                vehicle: 100,
+                lanes: 1
+            }]
+        });
+
         const vehicle = new Vehicle({
             targetVelocity: 100,
             length: 3,
