@@ -1,4 +1,4 @@
-const assert = require('assert');
+const assert = require('chai').assert;
 
 const Road = require('../road');
 const Vehicle = require('../vehicle');
@@ -27,15 +27,14 @@ const completeRoadAttrs = {
 
 describe('Road', () => {
 
-    let positions;
+    let events;
 
     const emitter = (vehicle, position) => {
-        // console.log('p', position);
-        positions.push({vehicle, position});
+        events.push({vehicle, position});
     };
 
     beforeEach(() => {
-        positions = [];
+        events = [];
     });
 
     it('has even stretch lengths', () => {
@@ -47,7 +46,7 @@ describe('Road', () => {
         const road = new Road({
             length: 100,
             sleep: 1,
-            fastForward: 1000 * 60 * 2,
+            fastForward: 1000 * 60 * 3,
             stretches: [{
                 vehicle: 100,
                 lanes: 1
@@ -63,7 +62,9 @@ describe('Road', () => {
         road.addVehicle(vehicle);
 
         road.finish(() => {
-            assert.ok(positions.length > 0);
+            var lastIndex = events.length - 1;
+            assert.isAbove(lastIndex, 0);
+            assert.isAtLeast(events[lastIndex].position.distance, 100);
             done();
         });
     });

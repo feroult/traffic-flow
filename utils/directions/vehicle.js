@@ -6,7 +6,7 @@ class Vehicle {
 
     enter(road) {
         this.road = road;
-        this.position = 0;
+        this.distance = 0;
         this.stretchIndex = 0;
         this.scheduleNextMove();
     }
@@ -21,9 +21,9 @@ class Vehicle {
         var number = new Date().getTime() - this.timestamp;
         const elapsed = (number) * this.road.fastForward;
         // console.log('elapsed', number, elapsed);
-        this.position += this.velocity * (elapsed / 1000 / 60 / 60);
-        this.emitter(this, {position: this.position});
-        if (this.position >= 100) {
+        this.distance += this.velocity * (elapsed / 1000 / 60 / 60);
+        this.emitter(this, {distance: this.distance});
+        if (this.distance >= 100) {
             this.road.removeVehicle(this);
         } else {
             this.scheduleNextMove();
