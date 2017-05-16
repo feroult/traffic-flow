@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 
-const Road = require('../road');
-const Vehicle = require('../vehicle');
+const Road = require('../src/road');
+const Vehicle = require('../src/vehicle');
 
 const completeRoadAttrs = {
     length: 10,

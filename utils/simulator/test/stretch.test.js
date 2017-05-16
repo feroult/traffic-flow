@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const Stretch = require('../stretch');
+const Stretch = require('../src/stretch');
 
 describe('Stretch', () => {
 
