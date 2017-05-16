@@ -47,7 +47,7 @@ describe('Road', () => {
         assert.equal(2, road.stretchesLength);
     });
 
-    it('simulates one vehicle on a road with one stretch', (done) => {
+    it('simulates one vehicle with one stretch', (done) => {
         const road = new Road({
             length: 100,
             sleep: 1,
@@ -75,7 +75,7 @@ describe('Road', () => {
         });
     });
 
-    it('simulates one vehicle on a road with two stretches', (done) => {
+    it('simulates one vehicle with two stretches', (done) => {
         const road = new Road({
             length: 100,
             sleep: 1,
