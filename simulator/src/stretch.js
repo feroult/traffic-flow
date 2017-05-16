@@ -1,4 +1,5 @@
 const TRAFFIC_SLOWDOWN_THRESHOLD = 0.3;
+const MINIMUN_VELOCITY_THRESHOLD = 5;
 
 class Stretch {
 
@@ -30,7 +31,8 @@ class Stretch {
 
         if (this.trafficLoad() > TRAFFIC_SLOWDOWN_THRESHOLD) {
             const slowDownFactor = (this.trafficLoad() - TRAFFIC_SLOWDOWN_THRESHOLD ) / ( 1 - TRAFFIC_SLOWDOWN_THRESHOLD);
-            return velocity * (1 - slowDownFactor);
+            velocity = velocity * (1 - slowDownFactor);
+            return velocity > MINIMUN_VELOCITY_THRESHOLD ? velocity : MINIMUN_VELOCITY_THRESHOLD;
         }
 
         return velocity;

@@ -59,6 +59,16 @@ describe('Stretch', () => {
             });
             assert.equal(stretch.computeVelocity(100), 70);
         });
+
+        it('has a mininum velocity', () => {
+            const stretch = new Stretch({
+                velocity: 100,
+                lanes: 1,
+                length: 10,
+                traffic: 10
+            });
+            assert.equal(stretch.computeVelocity(100), 5);
+        });
     });
 
 });
