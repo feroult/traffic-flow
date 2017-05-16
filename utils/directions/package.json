@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --require babel-core/register"
   },
   "author": "Fernando Ultremare <feroult@gmail.com> (http://github.com/feroult)",
   "license": "ISC",

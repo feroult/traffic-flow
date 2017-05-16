@@ -22,8 +22,15 @@ class Road {
         vehicle.enter(this);
     }
 
+    removeVehicle(vehicle) {
+        this.vehicles--;
+        if (this.vehicles == 0) {
+            this.finishCb && this.finishCb();
+        }
+    }
+
     finish(cb) {
-        cb && cb();
+        this.finishCb = cb;
     }
 
 

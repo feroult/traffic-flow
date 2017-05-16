@@ -27,25 +27,32 @@ const attrs = {
 describe('Road', () => {
 
     let road;
+    let positions;
+
+    const emitter = (vehicle, position) => {
+        positions.push({vehicle, position});
+    };
 
     beforeEach(() => {
         road = new Road(attrs);
+        positions = [];
     });
 
-    it('has even strech lengths', () => {
+    it('has even stretch lengths', () => {
         assert.equal(2, road.stretchesLength);
     });
 
     it('simulates one vehicle', (done) => {
         const vehicle = new Vehicle({
             targetVelocity: 100,
-            length: 3
+            length: 3,
+            emitter: emitter
         });
 
         road.addVehicle(vehicle);
 
         road.finish(() => {
-            assert.ok(true);
+            assert.ok(positions.length > 0);
             done();
         });
     });
