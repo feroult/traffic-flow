@@ -23,7 +23,18 @@ const argv = require('yargs')
         alias: 'max',
         describe: 'maximum target velocity for new vehicles',
         default: 120
-    }).argv;
+    })
+    .options('sleep', {
+        alias: 's',
+        describe: 'vehicles interval (ms) time to emit events',
+        default: 1000,
+    })
+    .option('fast-forward', {
+        alias: 'fast',
+        describe: 'fast forward multiplier',
+        default: 1
+    })
+    .argv;
 
 
 const stretches = [];
@@ -36,16 +47,15 @@ for (let i = 0; i < 100; i++) {
 
 const road = new Road({
     length: 100,
-    sleep: 1000,
-    fastForward: 10,
+    sleep: argv.sleep,
+    fastForward: argv['fast-forward'],
     stretches: stretches
 });
 
-let count = 0;
 let intervalId = setInterval(spawn, argv.interval);
 
 function emitter(vehicle) {
-    console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
+    // console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
 }
 
 function randomTargetVelocity() {
@@ -60,12 +70,7 @@ function spawn() {
             emitter: emitter
         });
         road.addVehicle(vehicle);
-        count++;
     }
 
-    console.log('count', count);
-
-    if (count >= argv.vehicles) {
-        clearInterval(intervalId);
-    }
+    console.log(`Added ${argv.vehicles} new vehicles. Road total: ${road.vehicles}.`);
 }
