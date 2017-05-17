@@ -21,10 +21,7 @@ class Vehicle {
         const elapsedHours = ((new Date().getTime() - this.timestamp)) * this.road.fastForward / 1000 / 60 / 60;
 
         this.time += elapsedHours;
-
         this.road.moveVehicleTo(this, elapsedHours);
-
-        // move from streches
 
         this.emitter && this.emitter(this);
 

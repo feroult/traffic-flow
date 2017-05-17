@@ -60,6 +60,17 @@ class Road {
 
         } while (index !== projectedIndex);
 
+        if (vehicle.stretchIndex && vehicle.stretchIndex !== projectedIndex) {
+            this.stretches[vehicle.stretchIndex].exitVehicle(vehicle);
+            vehicle.stretchIndex = undefined;
+        }
+
+        if (projectedIndex !== undefined && projectedIndex < this.stretches.length &&
+            projectedIndex !== vehicle.stretchIndex) {
+            this.stretches[projectedIndex].enterVehicle(vehicle);
+            vehicle.stretchIndex = projectedIndex;
+        }
+
         vehicle.distance = distance;
     }
 
