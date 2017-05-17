@@ -47,11 +47,20 @@ function spawn() {
 }
 
 function remoteControlServerSetup() {
-    var server = dnode({
+    const updateInterval = function (newArgv) {
+        if (argv.interval !== newArgv.interval) {
+            clearInterval(intervalId);
+            setInterval(spawn, newArgv.interval);
+        }
+    };
+
+    const server = dnode({
         control: function (newArgv) {
             console.log('----> remote control');
+            updateInterval(newArgv);
             argv = newArgv;
         }
     });
+    
     server.listen(argv.port);
 }
