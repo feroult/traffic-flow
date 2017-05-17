@@ -6,6 +6,6 @@ const argv = require('./options');
 const d = dnode.connect(argv.port);
 
 d.on('remote', function (remote) {
-    remote.control();
+    remote.control(argv);
     process.exit(0);
 });

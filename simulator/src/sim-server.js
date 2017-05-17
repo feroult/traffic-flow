@@ -3,7 +3,8 @@
 const dnode = require('dnode');
 const Road = require('./road');
 const Vehicle = require('./vehicle');
-const argv = require('./options');
+
+let argv = require('./options');
 
 remoteControlServerSetup();
 
@@ -47,8 +48,9 @@ function spawn() {
 
 function remoteControlServerSetup() {
     var server = dnode({
-        control: function (s, cb) {
-            console.log('ha');
+        control: function (newArgv) {
+            console.log('----> remote control');
+            argv = newArgv;
         }
     });
     server.listen(argv.port);
