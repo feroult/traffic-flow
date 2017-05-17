@@ -1,6 +1,9 @@
+const shortid = require('shortid');
+
 class Vehicle {
 
     constructor(attrs) {
+        attrs.id = shortid.generate();
         Object.assign(this, attrs);
     }
 

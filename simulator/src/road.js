@@ -30,7 +30,7 @@ class Road {
         let distance = vehicle.distance;
         let hours = elapsedHours;
 
-        let stretch, index, projectedIndex;
+        let stretch, index, projectedIndex, velocity;
 
         do {
             index = this.getStretchIndex(distance);
@@ -48,7 +48,7 @@ class Road {
                 }
             }
 
-            const velocity = stretch.computeVelocity(targetVelocity);
+            velocity = stretch.computeVelocity(targetVelocity);
             const delta = velocity * hours;
 
             projectedIndex = this.getStretchIndex(distance + delta);
@@ -65,6 +65,7 @@ class Road {
         } while (index !== projectedIndex);
 
         this._updateStretchesTraffic(vehicle, projectedIndex);
+        vehicle.velocity = velocity;
 
         return distance;
     }
