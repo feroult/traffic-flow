@@ -26,7 +26,7 @@ const road = new Road({
 let intervalId = setInterval(spawn, argv.interval);
 
 function emitter(vehicle) {
-    // console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
+    console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
 }
 
 function randomTargetVelocity() {
