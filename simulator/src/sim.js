@@ -1,9 +1,29 @@
+#!/usr/bin/env node
+
 const Road = require('./road');
 const Vehicle = require('./vehicle');
 
 const argv = require('yargs')
-    .demandOption('vehicles')
-    .argv;
+    .option('vehicles', {
+        alias: 'v',
+        describe: 'vehicles arriving in each interval',
+        default: 2
+    })
+    .option('interval', {
+        alias: 'i',
+        describe: 'interval (ms) to enter new vehicles',
+        default: 1000,
+    })
+    .option('min-velocity', {
+        alias: 'min',
+        describe: 'mininum target velocity for new vehicles',
+        default: 80
+    })
+    .option('max-velocity', {
+        alias: 'max',
+        describe: 'maximum target velocity for new vehicles',
+        default: 120
+    }).argv;
 
 
 const stretches = [];
@@ -22,16 +42,20 @@ const road = new Road({
 });
 
 let count = 0;
-let intervalId = setInterval(spawn, 100);
+let intervalId = setInterval(spawn, argv.interval);
 
 function emitter(vehicle) {
     console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
 }
 
+function randomTargetVelocity() {
+    return Math.floor(Math.random() * argv['max-velocity']) + argv['min-velocity'];
+}
+
 function spawn() {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < argv.vehicles; i++) {
         const vehicle = new Vehicle({
-            targetVelocity: 120,
+            targetVelocity: randomTargetVelocity(),
             length: 4,
             emitter: emitter
         });
