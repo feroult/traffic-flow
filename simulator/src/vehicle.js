@@ -21,11 +21,12 @@ class Vehicle {
         const elapsedHours = ((new Date().getTime() - this.timestamp)) * this.road.fastForward / 1000 / 60 / 60;
 
         this.time += elapsedHours;
-        this.distance = this.road.computeDistance(this.distance, elapsedHours, this.targetVelocity);
+
+        this.road.moveVehicleTo(this, elapsedHours);
 
         // move from streches
 
-        this.emitter(this);
+        this.emitter && this.emitter(this);
 
         if (this.distance >= this.road.length) {
             this.road.removeVehicle(this);

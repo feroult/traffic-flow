@@ -20,8 +20,10 @@ class Road {
         return Math.floor(distance / this.stretchesLength);
     }
 
-    computeDistance(from, elapsedHours, targetVelocity) {
-        let distance = from;
+    moveVehicleTo(vehicle, elapsedHours) {
+        const targetVelocity = vehicle.targetVelocity;
+
+        let distance = vehicle.distance;
         let hours = elapsedHours;
 
         let stretch, index, projectedIndex;
@@ -36,7 +38,7 @@ class Road {
             stretch = this.getStretch(distance);
 
             if (stretch.isFull()) {
-                if (this.getStretchIndex(from) !== index ||
+                if (this.getStretchIndex(vehicle.distance) !== index ||
                     this._nextStretchIsFull(index)) {
                     break;
                 }
@@ -58,7 +60,7 @@ class Road {
 
         } while (index !== projectedIndex);
 
-        return distance;
+        vehicle.distance = distance;
     }
 
     addVehicle(vehicle) {

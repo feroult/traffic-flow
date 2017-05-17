@@ -20,18 +20,18 @@ describe('Stretch', () => {
 
         it('enters a vehicle and gets more traffic', () => {
             stretch.enterVehicle({length: 3});
-            assert.equal(stretch.trafficLoad(), 3 / (2 * 9));
+            assert.equal(stretch.trafficLoad(), 0.003 / (2 * 9));
         });
 
         it('exits a vehicle and gets less traffic', () => {
             stretch.enterVehicle({length: 3});
             stretch.enterVehicle({length: 3});
             stretch.exitVehicle({length: 3});
-            assert.equal(stretch.trafficLoad(), 3 / (2 * 9));
+            assert.equal(stretch.trafficLoad(), 0.003 / (2 * 9));
         });
 
         it('can be full', () => {
-            stretch.enterVehicle({length: 18});
+            stretch.enterVehicle({length: 18000});
             assert.ok(stretch.isFull());
         });
 

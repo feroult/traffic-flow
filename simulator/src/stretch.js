@@ -15,11 +15,11 @@ class Stretch {
     }
 
     enterVehicle(vehicle) {
-        this.traffic += vehicle.length;
+        this.traffic += (vehicle.length / 1000);
     }
 
     exitVehicle(vehicle) {
-        this.traffic -= vehicle.length;
+        this.traffic -= (vehicle.length / 1000);
     }
 
     isFull() {

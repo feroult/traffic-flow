@@ -49,9 +49,14 @@ describe('Road', () => {
         });
     });
 
-    describe('#computeDistance', () => {
+    describe('#moveVehicleFromTo', () => {
 
-        it('computes the distance traveled across two stretches', () => {
+        const vehicle = new Vehicle({
+            targetVelocity: 100,
+            length: 3
+        });
+
+        it('move vehicle across two stretches', () => {
             const road = new Road({
                 length: 100,
                 stretches: [{
@@ -61,11 +66,13 @@ describe('Road', () => {
                 }]
             });
 
-            const distance = road.computeDistance(40, 0.5, 100);
-            assert.equal(distance, 70);
+            vehicle.distance = 40;
+            road.moveVehicleTo(vehicle, 0.5);
+
+            assert.equal(vehicle.distance, 70);
         });
 
-        it('computes the distance traveled across a stretch with traffic', () => {
+        it('move vehicle across a stretch with traffic', () => {
             const road = new Road({
                 length: 100,
                 stretches: [{
@@ -75,8 +82,10 @@ describe('Road', () => {
                 }]
             });
 
-            const distance = road.computeDistance(10, 0.5, 100);
-            assert.equal(distance, 45);
+            vehicle.distance = 10;
+            road.moveVehicleTo(vehicle, 0.5);
+
+            assert.equal(vehicle.distance, 45);
         });
 
         it('stops the vehicles at the border when the next stretch is full', () => {
@@ -92,8 +101,10 @@ describe('Road', () => {
                 }]
             });
 
-            const distance = road.computeDistance(40, 0.5, 100);
-            assert.equal(distance, 50);
+            vehicle.distance = 40;
+            road.moveVehicleTo(vehicle, 0.5);
+
+            assert.equal(vehicle.distance, 50);
         });
 
         it('stops the vehicles if the current and next stretch is full', () => {
@@ -110,8 +121,10 @@ describe('Road', () => {
                 }]
             });
 
-            const distance = road.computeDistance(40, 0.5, 100);
-            assert.equal(distance, 40);
+            vehicle.distance = 40;
+            road.moveVehicleTo(vehicle, 0.5);
+
+            assert.equal(vehicle.distance, 40);
         });
     });
 
@@ -175,5 +188,43 @@ describe('Road', () => {
                 done();
             });
         });
+
+        xit('simulates two vehicles with traffic', (done) => {
+            const road = new Road({
+                length: 100,
+                sleep: 1,
+                fastForward: 1000 * 60 * 3,
+                stretches: [{
+                    velocity: 100,
+                    lanes: 1
+                }, {
+                    velocity: 100,
+                    lanes: 1
+                }]
+            });
+
+            const vehicle1 = new Vehicle({
+                targetVelocity: 100,
+                length: 0,
+                emitter: emitter
+            });
+
+            const vehicle2 = new Vehicle({
+                targetVelocity: 50,
+                length: 25500
+            });
+
+            road.addVehicle(vehicle1);
+            road.addVehicle(vehicle2);
+
+            road.finish(() => {
+                var lastIndex = events.length - 1;
+                assert.isAbove(lastIndex, 0);
+                assert.equal(events[lastIndex].distance, 100);
+                assert.isAtLeast(events[lastIndex].time, 1.214);
+                done();
+            });
+        });
+
     });
 });
