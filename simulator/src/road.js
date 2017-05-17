@@ -35,8 +35,11 @@ class Road {
 
             stretch = this.getStretch(distance);
 
-            if (stretch.isFull() && this.getStretchIndex(from) !== index) {
-                break;
+            if (stretch.isFull()) {
+                if (this.getStretchIndex(from) !== index ||
+                    this._nextStretchIsFull(index)) {
+                    break;
+                }
             }
 
             const velocity = stretch.computeVelocity(targetVelocity);
@@ -72,6 +75,10 @@ class Road {
 
     finish(cb) {
         this.finishCb = cb;
+    }
+
+    _nextStretchIsFull(index) {
+        return (index + 1 < this.stretches.length && this.stretches[index + 1].isFull());
     }
 
 

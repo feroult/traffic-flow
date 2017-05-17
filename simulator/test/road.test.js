@@ -42,113 +42,138 @@ describe('Road', () => {
         events = [];
     });
 
-    it('has even stretch lengths', () => {
-        const road = new Road(completeRoadAttrs);
-        assert.equal(2, road.stretchesLength);
-    });
-
-    it('computes the distance traveled across two stretches', () => {
-        const road = new Road({
-            length: 100,
-            stretches: [{
-                velocity: 100,
-            }, {
-                velocity: 50,
-            }]
-        });
-
-        const distance = road.computeDistance(40, 0.5, 100);
-        assert.equal(distance, 70);
-    });
-
-    it('computes the distance traveled across a stretch with traffic', () => {
-        const road = new Road({
-            length: 100,
-            stretches: [{
-                velocity: 100,
-                lanes: 1,
-                traffic: 51
-            }]
-        });
-
-        const distance = road.computeDistance(10, 0.5, 100);
-        assert.equal(distance, 45);
-    });
-
-    it('stops the vehicles at the border when the next stretch is full', () => {
-        const road = new Road({
-            length: 100,
-            stretches: [{
-                velocity: 100,
-                lanes: 1,
-            }, {
-                velocity: 100,
-                lanes: 1,
-                traffic: 50
-            }]
-        });
-
-        const distance = road.computeDistance(40, 0.5, 100);
-        assert.equal(distance, 50);
-    });
-
-    it('simulates one vehicle with one stretch', (done) => {
-        const road = new Road({
-            length: 100,
-            sleep: 1,
-            fastForward: 1000 * 60 * 3,
-            stretches: [{
-                velocity: 100,
-                lanes: 1
-            }]
-        });
-
-        const vehicle = new Vehicle({
-            targetVelocity: 100,
-            length: 3,
-            emitter: emitter
-        });
-
-        road.addVehicle(vehicle);
-
-        road.finish(() => {
-            var lastIndex = events.length - 1;
-            assert.isAbove(lastIndex, 0);
-            assert.equal(events[lastIndex].distance, 100);
-            assert.isAtLeast(events[lastIndex].time, 1);
-            done();
+    describe('#constructor', () => {
+        it('has even stretch lengths', () => {
+            const road = new Road(completeRoadAttrs);
+            assert.equal(2, road.stretchesLength);
         });
     });
 
-    it('simulates one vehicle with two stretches', (done) => {
-        const road = new Road({
-            length: 100,
-            sleep: 1,
-            fastForward: 1000 * 60 * 3,
-            stretches: [{
-                velocity: 100,
-                lanes: 1
-            }, {
-                velocity: 50,
-                lanes: 1
-            }]
+    describe('#computeDistance', () => {
+
+        it('computes the distance traveled across two stretches', () => {
+            const road = new Road({
+                length: 100,
+                stretches: [{
+                    velocity: 100,
+                }, {
+                    velocity: 50,
+                }]
+            });
+
+            const distance = road.computeDistance(40, 0.5, 100);
+            assert.equal(distance, 70);
         });
 
-        const vehicle = new Vehicle({
-            targetVelocity: 100,
-            length: 3,
-            emitter: emitter
+        it('computes the distance traveled across a stretch with traffic', () => {
+            const road = new Road({
+                length: 100,
+                stretches: [{
+                    velocity: 100,
+                    lanes: 1,
+                    traffic: 51
+                }]
+            });
+
+            const distance = road.computeDistance(10, 0.5, 100);
+            assert.equal(distance, 45);
         });
 
-        road.addVehicle(vehicle);
+        it('stops the vehicles at the border when the next stretch is full', () => {
+            const road = new Road({
+                length: 100,
+                stretches: [{
+                    velocity: 100,
+                    lanes: 1,
+                }, {
+                    velocity: 100,
+                    lanes: 1,
+                    traffic: 50
+                }]
+            });
 
-        road.finish(() => {
-            var lastIndex = events.length - 1;
-            assert.isAbove(lastIndex, 0);
-            assert.equal(events[lastIndex].distance, 100);
-            assert.isAtLeast(events[lastIndex].time, 1.5);
-            done();
+            const distance = road.computeDistance(40, 0.5, 100);
+            assert.equal(distance, 50);
+        });
+
+        it('stops the vehicles if the current and next stretch is full', () => {
+            const road = new Road({
+                length: 100,
+                stretches: [{
+                    velocity: 100,
+                    lanes: 1,
+                    traffic: 50
+                }, {
+                    velocity: 100,
+                    lanes: 1,
+                    traffic: 50
+                }]
+            });
+
+            const distance = road.computeDistance(40, 0.5, 100);
+            assert.equal(distance, 40);
         });
     });
 
+    describe('simulations', () => {
+
+        it('simulates one vehicle with one stretch', (done) => {
+            const road = new Road({
+                length: 100,
+                sleep: 1,
+                fastForward: 1000 * 60 * 3,
+                stretches: [{
+                    velocity: 100,
+                    lanes: 1
+                }]
+            });
+
+            const vehicle = new Vehicle({
+                targetVelocity: 100,
+                length: 3,
+                emitter: emitter
+            });
+
+            road.addVehicle(vehicle);
+
+            road.finish(() => {
+                var lastIndex = events.length - 1;
+                assert.isAbove(lastIndex, 0);
+                assert.equal(events[lastIndex].distance, 100);
+                assert.isAtLeast(events[lastIndex].time, 1);
+                done();
+            });
+        });
+
+        it('simulates one vehicle with two stretches', (done) => {
+            const road = new Road({
+                length: 100,
+                sleep: 1,
+                fastForward: 1000 * 60 * 3,
+                stretches: [{
+                    velocity: 100,
+                    lanes: 1
+                }, {
+                    velocity: 50,
+                    lanes: 1
+                }]
+            });
+
+            const vehicle = new Vehicle({
+                targetVelocity: 100,
+                length: 3,
+                emitter: emitter
+            });
+
+            road.addVehicle(vehicle);
+
+            road.finish(() => {
+                var lastIndex = events.length - 1;
+                assert.isAbove(lastIndex, 0);
+                assert.equal(events[lastIndex].distance, 100);
+                assert.isAtLeast(events[lastIndex].time, 1.5);
+                done();
+            });
+        });
+    });
 });
