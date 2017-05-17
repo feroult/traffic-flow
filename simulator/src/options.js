@@ -29,6 +29,11 @@ const argv = require('yargs')
         describe: 'fast forward multiplier',
         default: 1
     })
+    .option('port', {
+        alias: 'p',
+        describe: 'remote control server port',
+        default: 5004
+    })
     .argv;
 
 module.exports = argv;

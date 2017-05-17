@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
+const dnode = require('dnode');
 const Road = require('./road');
 const Vehicle = require('./vehicle');
-
 const argv = require('./options');
+
+remoteControlServerSetup();
 
 const stretches = [];
 for (let i = 0; i < 100; i++) {
@@ -41,4 +43,13 @@ function spawn() {
     }
 
     console.log(`Added ${argv.vehicles} new vehicles. Road total: ${road.vehicles}.`);
+}
+
+function remoteControlServerSetup() {
+    var server = dnode({
+        control: function (s, cb) {
+            console.log('ha');
+        }
+    });
+    server.listen(argv.port);
 }
