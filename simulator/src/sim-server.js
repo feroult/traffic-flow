@@ -50,7 +50,7 @@ function remoteControlServerSetup() {
     const updateInterval = function (newArgv) {
         if (argv.interval !== newArgv.interval) {
             clearInterval(intervalId);
-            setInterval(spawn, newArgv.interval);
+            intervalId = setInterval(spawn, newArgv.interval);
         }
     };
 
@@ -61,6 +61,6 @@ function remoteControlServerSetup() {
             argv = newArgv;
         }
     });
-    
+
     server.listen(argv.port);
 }
