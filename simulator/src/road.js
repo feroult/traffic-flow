@@ -35,6 +35,10 @@ class Road {
 
             stretch = this.getStretch(distance);
 
+            if (stretch.isFull() && this.getStretchIndex(from) !== index) {
+                break;
+            }
+
             const velocity = stretch.computeVelocity(targetVelocity);
             const delta = velocity * hours;
 

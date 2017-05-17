@@ -75,6 +75,23 @@ describe('Road', () => {
         assert.equal(distance, 45);
     });
 
+    it('stops the vehicles at the border when the next stretch is full', () => {
+        const road = new Road({
+            length: 100,
+            stretches: [{
+                velocity: 100,
+                lanes: 1,
+            }, {
+                velocity: 100,
+                lanes: 1,
+                traffic: 50
+            }]
+        });
+
+        const distance = road.computeDistance(40, 0.5, 100);
+        assert.equal(distance, 50);
+    });
+
     it('simulates one vehicle with one stretch', (done) => {
         const road = new Road({
             length: 100,

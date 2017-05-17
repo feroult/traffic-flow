@@ -23,6 +23,8 @@ class Vehicle {
         this.time += elapsedHours;
         this.distance = this.road.computeDistance(this.distance, elapsedHours, this.targetVelocity);
 
+        // move from streches
+
         this.emitter(this);
 
         if (this.distance >= this.road.length) {
