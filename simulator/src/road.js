@@ -21,6 +21,10 @@ class Road {
     }
 
     moveVehicleTo(vehicle, elapsedHours) {
+        vehicle.distance = this._computeVehicleNewDistance(vehicle, elapsedHours);
+    }
+
+    _computeVehicleNewDistance(vehicle, elapsedHours) {
         const targetVelocity = vehicle.targetVelocity;
 
         let distance = vehicle.distance;
@@ -60,6 +64,12 @@ class Road {
 
         } while (index !== projectedIndex);
 
+        this._updateStretchesTraffic(vehicle, projectedIndex);
+
+        return distance;
+    }
+
+    _updateStretchesTraffic(vehicle, projectedIndex) {
         if (vehicle.stretchIndex && vehicle.stretchIndex !== projectedIndex) {
             this.stretches[vehicle.stretchIndex].exitVehicle(vehicle);
             vehicle.stretchIndex = undefined;
@@ -70,8 +80,6 @@ class Road {
             this.stretches[projectedIndex].enterVehicle(vehicle);
             vehicle.stretchIndex = projectedIndex;
         }
-
-        vehicle.distance = distance;
     }
 
     addVehicle(vehicle) {
