@@ -18,7 +18,7 @@ for (let i = 0; i < 100; i++) {
 
 const road = new Road({
     length: 100,
-    sleep: argv.sleep,
+    sleep: getSleep,
     fastForward: argv['fast-forward'],
     stretches: stretches
 });
@@ -63,4 +63,8 @@ function remoteControlServerSetup() {
     });
 
     server.listen(argv.port);
+}
+
+function getSleep() {
+    return argv.sleep;
 }

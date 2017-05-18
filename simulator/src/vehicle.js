@@ -17,7 +17,12 @@ class Vehicle {
 
     scheduleNextMove() {
         this.timestamp = new Date().getTime();
-        setTimeout(() => this.move(), this.road.sleep);
+        setTimeout(() => this.move(), this._sleepInterval());
+    }
+
+    _sleepInterval() {
+        var sleep = this.road.sleep;
+        return (typeof sleep == 'function') ? sleep() : sleep;
     }
 
     move() {
