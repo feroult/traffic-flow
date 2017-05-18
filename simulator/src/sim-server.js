@@ -4,7 +4,7 @@ const dnode = require('dnode');
 const Road = require('./road');
 const Vehicle = require('./vehicle');
 
-let argv = require('./options');
+let argv = require('./options')(true);
 
 remoteControlServerSetup();
 
@@ -48,7 +48,7 @@ function spawn() {
 
 function remoteControlServerSetup() {
     const updateInterval = function (newArgv) {
-        if (argv.interval !== newArgv.interval) {
+        if (newArgv.interval && argv.interval !== newArgv.interval) {
             clearInterval(intervalId);
             intervalId = setInterval(spawn, newArgv.interval);
         }
@@ -58,7 +58,7 @@ function remoteControlServerSetup() {
         control: function (newArgv) {
             console.log('----> remote control');
             updateInterval(newArgv);
-            argv = newArgv;
+            Object.assign(argv, newArgv);
         }
     });
 
