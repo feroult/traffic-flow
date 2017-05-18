@@ -43,22 +43,29 @@ function spawn() {
         road.addVehicle(vehicle);
     }
 
-    console.log(`Added ${argv.vehicles} new vehicles. Road total: ${road.vehicles}.`);
+    console.log(`Added ${argv.vehicles} new vehicles. Road total: ${road.vehiclesCount}.`);
 }
 
 function remoteControlServerSetup() {
-    const updateInterval = function (newArgv) {
-        if (newArgv.interval && argv.interval !== newArgv.interval) {
-            clearInterval(intervalId);
-            intervalId = setInterval(spawn, newArgv.interval);
-        }
+    const updateSleep = function () {
+        road.resetSleepTimeout();
+    };
+
+    const updateInterval = function () {
+        clearInterval(intervalId);
+        intervalId = setInterval(spawn, argv.interval);
     };
 
     const server = dnode({
         control: function (newArgv) {
             console.log('----> remote control');
-            updateInterval(newArgv);
+
+            const willUpdateInterval = newArgv.interval && argv.interval !== newArgv.interval;
+            const willUpdateSleep = newArgv.sleep && argv.sleep !== newArgv.sleep;
+
             Object.assign(argv, newArgv);
+            willUpdateInterval && updateInterval();
+            willUpdateSleep && updateSleep();
         }
     });
 

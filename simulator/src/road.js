@@ -4,7 +4,8 @@ class Road {
 
     constructor(attrs) {
         Object.assign(this, attrs);
-        this.vehicles = 0;
+        this.vehiclesCount = 0;
+        this.vehicles = {};
         this.stretchesLength = attrs.length / attrs.stretches.length;
         this.stretches = attrs.stretches.map(strech => {
             strech.length = this.stretchesLength;
@@ -84,14 +85,24 @@ class Road {
     }
 
     addVehicle(vehicle) {
-        this.vehicles++;
+        this.vehiclesCount++;
+        this.vehicles[vehicle.id] = vehicle;
         vehicle.enter(this);
     }
 
     removeVehicle(vehicle) {
-        this.vehicles--;
-        if (this.vehicles == 0) {
+        this.vehiclesCount--;
+        delete this.vehicles[vehicle.id];
+        if (this.vehiclesCount == 0) {
             this.finishCb && this.finishCb();
+        }
+    }
+
+    resetSleepTimeout() {
+        for (let id in this.vehicles) {
+            if (this.vehicles.hasOwnProperty(id)) {
+                this.vehicles[id].resetSleepTimeout();
+            }
         }
     }
 
