@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const dnode = require('dnode');
-const argv = require('./options')(true);
+const argv = require('./options')(false);
 
 const d = dnode.connect(argv.port);
 
