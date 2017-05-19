@@ -38,6 +38,30 @@ class Stretch {
         return velocity;
     }
 
+    static build(params) {
+        const stretches = [];
+
+        for (let i = 0; i < params.count; i++) {
+            stretches.push({
+                length: params.length / params.count,
+                lanes: params.lanes,
+                velocity: params.velocity
+            });
+        }
+
+        for (let i = 0; i < params.custom.length; i++) {
+            const custom = params.custom[i];
+            const from = Math.floor(params.count * custom.from);
+            const to = Math.ceil(params.count * custom.to);
+            for (let j = from; j < to; j++) {
+                stretches[j].lanes = custom.lanes;
+                stretches[j].velocity = custom.velocity;
+            }
+        }
+
+        return stretches;
+    }
+
 }
 
 module.exports = Stretch;
