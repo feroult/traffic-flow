@@ -100,7 +100,7 @@ describe('Stretch', () => {
             ]
         };
 
-        it.only('build a stretches array from params object', () => {
+        it('build a stretches array from params object', () => {
             const stretches = Stretch.build(params);
             assert.equal(100, stretches.length);
 
