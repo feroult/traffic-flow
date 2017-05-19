@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
 const dnode = require('dnode');
+
+const publish = require('./pubsub/publish');
+
 const Road = require('./road');
 const Vehicle = require('./vehicle');
 
@@ -18,7 +21,8 @@ let intervalId = setInterval(spawn, argv.interval / getFastForward());
 
 function emitter(vehicle) {
 
-    const point = road.getPoint(vehicle.distance);
+    // const point = road.getPoint(vehicle.distance);
+    const point = [0, 0];
 
     const event = {
         simulationId: road.simulationId,
@@ -34,6 +38,10 @@ function emitter(vehicle) {
     if (isVerbose()) {
         console.log('Event ->', event.vehicleId, event.timestamp, event.velocity, [point[0], point[1]]);
     }
+
+    // publish(argv, event).catch(err => {
+    //     console.log('Error publishing', err);
+    // });
 }
 
 function randomTargetVelocity() {
