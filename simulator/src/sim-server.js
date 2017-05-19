@@ -17,7 +17,9 @@ const road = new Road(bandeirantes);
 let intervalId = setInterval(spawn, argv.interval / getFastForward());
 
 function emitter(vehicle) {
-    console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
+    if (isVerbose()) {
+        console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
+    }
 }
 
 function randomTargetVelocity() {
@@ -34,7 +36,9 @@ function spawn() {
         road.addVehicle(vehicle);
     }
 
-    console.log(`Added ${argv.vehicles} new vehicles. Road total: ${road.vehiclesCount}.`);
+    if (isVerbose()) {
+        console.log(`Added ${argv.vehicles} new vehicles. Road total: ${road.vehiclesCount}.`);
+    }
 }
 
 function remoteControlServerSetup() {
@@ -100,4 +104,8 @@ function getSleep() {
 
 function getFastForward() {
     return argv['fast-forward'];
+}
+
+function isVerbose() {
+    return argv.verbose && argv.verbose !== 'false';
 }

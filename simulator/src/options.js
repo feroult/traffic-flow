@@ -25,7 +25,7 @@ function parseOptions(withDefaults) {
 
     const options = {
         'vehicles': {
-            alias: 'v',
+            alias: 've',
             describe: 'vehicles arriving in each interval',
             default: 2
         },
@@ -66,6 +66,11 @@ function parseOptions(withDefaults) {
         'reset-road': {
             alias: 'r',
             describe: 'reset road stretches'
+        },
+        'verbose': {
+            alias: 'v',
+            describe: 'print debug information to console',
+            default: true
         }
     };
 
