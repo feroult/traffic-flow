@@ -29,7 +29,8 @@ class Vehicle {
 
     _sleepInterval() {
         let sleep = this.road.sleep;
-        return (typeof sleep == 'function') ? sleep() : sleep;
+        const realSleep = (typeof sleep == 'function') ? sleep() : sleep;
+        return realSleep / this._fastForward();
     }
 
     _fastForward() {

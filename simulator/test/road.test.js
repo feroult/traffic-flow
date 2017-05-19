@@ -5,7 +5,7 @@ const Vehicle = require('../src/vehicle');
 
 const completeRoadAttrs = {
     length: 10,
-    sleep: 1,
+    sleep: 1000 * 60 * 6,
     fastForward: 1000 * 60 * 6,
     stretches: [{
         velocity: 40,
@@ -145,7 +145,7 @@ describe('Road', () => {
         it('simulates one vehicle with one stretch', (done) => {
             const road = new Road({
                 length: 100,
-                sleep: 1,
+                sleep: 1000 * 60 * 3,
                 fastForward: 1000 * 60 * 3,
                 stretches: [{
                     velocity: 100,
@@ -173,7 +173,7 @@ describe('Road', () => {
         it('simulates one vehicle with two stretches', (done) => {
             const road = new Road({
                 length: 100,
-                sleep: 1,
+                sleep: 1000 * 60 * 3,
                 fastForward: 1000 * 60 * 3,
                 stretches: [{
                     velocity: 100,
@@ -204,7 +204,7 @@ describe('Road', () => {
         it('simulates two vehicles with traffic', (done) => {
             const road = new Road({
                 length: 100,
-                sleep: 1,
+                sleep: 1000 * 60 * 3,
                 fastForward: 1000 * 60 * 3,
                 stretches: [{
                     velocity: 100,
