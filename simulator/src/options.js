@@ -58,6 +58,10 @@ function parseOptions(withDefaults) {
             alias: 'p',
             describe: 'remote control server port',
             default: 5004
+        },
+        'change-road': {
+            alias: 'c',
+            describe: 'update stretch range {from:%, to:%, lanes:?, velocity:?}'
         }
     };
 
