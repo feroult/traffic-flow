@@ -10,7 +10,7 @@ remoteControlServerSetup();
 
 const bandeirantes = Road.loadConfig('./data/bandeirantes');
 bandeirantes.sleep = getSleep;
-bandeirantes.fastForward = argv['fast-forward']
+bandeirantes.fastForward = () => argv['fast-forward'];
 
 const road = new Road(bandeirantes);
 

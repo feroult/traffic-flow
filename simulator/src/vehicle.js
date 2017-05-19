@@ -28,12 +28,17 @@ class Vehicle {
     }
 
     _sleepInterval() {
-        var sleep = this.road.sleep;
+        let sleep = this.road.sleep;
         return (typeof sleep == 'function') ? sleep() : sleep;
     }
 
+    _fastForward() {
+        let ff = this.road.fastForward;
+        return (typeof ff == 'function') ? ff() : ff;
+    }
+
     move() {
-        const elapsedHours = ((new Date().getTime() - this.timestamp)) * this.road.fastForward / 1000 / 60 / 60;
+        const elapsedHours = ((new Date().getTime() - this.timestamp)) * this._fastForward() / 1000 / 60 / 60;
 
         this.time += elapsedHours;
         this.road.moveVehicleTo(this, elapsedHours);
