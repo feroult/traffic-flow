@@ -69,9 +69,17 @@ function remoteControlServerSetup() {
             return;
         }
 
-        console.log("c", changeStr);
         const change = JSON.parse(changeStr);
-        console.log('changeStr', change);
+        road.change(change);
+    };
+
+    const resetRoad = (newArgv) => {
+        const reset = newArgv['reset-road'];
+        if (!reset) {
+            return;
+        }
+
+        road.reset();
     };
 
     const server = dnode({
@@ -79,6 +87,7 @@ function remoteControlServerSetup() {
             console.log('----> remote control');
             updateParams(newArgv);
             changeRoad(newArgv);
+            resetRoad(newArgv);
         }
     });
 
