@@ -1,4 +1,5 @@
 config.js
+keyfile.json
 node_modules
 .idea
 *.iml
