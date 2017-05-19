@@ -9,6 +9,7 @@
   "author": "Fernando Ultremare <feroult@gmail.com> (http://github.com/feroult)",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/pubsub": "^0.12.0",
     "@google/maps": "^0.3.1",
     "@mapbox/polyline": "^0.2.0",
     "dnode": "^1.2.2",
