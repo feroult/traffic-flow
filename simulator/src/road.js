@@ -1,9 +1,12 @@
+const shortid = require('shortid');
+
 const Stretch = require('./stretch');
 
 class Road {
 
     constructor(attrs) {
         Object.assign(this, attrs);
+        this.simulationId = shortid.generate();
         this.vehiclesCount = 0;
         this.vehicles = {};
         this.stretchesLength = attrs.length / attrs.stretches.length;
