@@ -52,6 +52,7 @@ describe('Road', () => {
     describe('#loadConfig', () => {
         it('loads config from file', () => {
             const config = Road.loadConfig('../src/data/bandeirantes');
+            assert.equal(71.32534361053114, config.length);
             assert.equal(100, config.stretches.length);
         });
     });

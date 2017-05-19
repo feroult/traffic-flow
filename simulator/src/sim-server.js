@@ -8,20 +8,11 @@ let argv = require('./options')(true);
 
 remoteControlServerSetup();
 
-const stretches = [];
-for (let i = 0; i < 100; i++) {
-    stretches.push({
-        velocity: 120,
-        lanes: 5
-    });
-}
+const bandeirantes = Road.loadConfig('./data/bandeirantes');
+bandeirantes.sleep = getSleep;
+bandeirantes.fastForward = argv['fast-forward']
 
-const road = new Road({
-    length: 100,
-    sleep: getSleep,
-    fastForward: argv['fast-forward'],
-    stretches: stretches
-});
+const road = new Road(bandeirantes);
 
 let intervalId = setInterval(spawn, argv.interval);
 
