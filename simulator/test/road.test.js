@@ -57,6 +57,67 @@ describe('Road', () => {
         });
     });
 
+    describe('#change', () => {
+
+        const stretches = [];
+        for (let i = 0; i < 10; i++) {
+            stretches.push({
+                velocity: 100,
+                lanes: 2
+            });
+        }
+
+        it('change the road stretches', () => {
+            const road = new Road({
+                length: 100,
+                stretches: stretches
+            });
+
+
+            road.change({
+                from: 0.2,
+                to: 0.3,
+                lanes: 3,
+                velocity: 120
+            });
+
+            assert.equal(road.stretches[0].lanes, 2);
+            assert.equal(road.stretches[0].velocity, 100);
+            assert.equal(road.stretches[1].lanes, 3);
+            assert.equal(road.stretches[1].velocity, 120);
+            assert.equal(road.stretches[2].lanes, 3);
+            assert.equal(road.stretches[3].lanes, 2);
+        });
+
+        it('can be reseted', () => {
+            const road = new Road({
+                length: 100,
+                stretches: stretches
+            });
+
+            
+            road.change({
+                from: 0.2,
+                to: 0.3,
+                lanes: 3
+            });
+
+            assert.equal(road.stretches[0].lanes, 2);
+            assert.equal(road.stretches[1].lanes, 3);
+            assert.equal(road.stretches[1].velocity, 100);
+            assert.equal(road.stretches[2].lanes, 3);
+            assert.equal(road.stretches[3].lanes, 2);
+
+            road.reset();
+
+            assert.equal(road.stretches[0].lanes, 2);
+            assert.equal(road.stretches[1].lanes, 2);
+            assert.equal(road.stretches[2].lanes, 2);
+            assert.equal(road.stretches[3].lanes, 2);
+        });
+    });
+
+
     describe('#moveVehicleFromTo', () => {
 
         let vehicle;

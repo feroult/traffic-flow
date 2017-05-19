@@ -11,6 +11,7 @@ class Road {
             strech.length = this.stretchesLength;
             return new Stretch(strech);
         });
+        this.stretchesBackup = this.stretches.map(s => Object.assign({}, s));
     }
 
     getStretch(distance) {
@@ -104,6 +105,21 @@ class Road {
                 this.vehicles[id].resetSleepTimeout();
             }
         }
+    }
+
+    change(params) {
+        const count = this.stretches.length - 1;
+
+        const from = Math.floor(count * params.from);
+        const to = Math.ceil(count * params.to);
+        for (let j = from; j < to; j++) {
+            params.lanes && (this.stretches[j].lanes = params.lanes);
+            params.velocity && (this.stretches[j].velocity = params.velocity);
+        }
+    }
+
+    reset() {
+        this.stretches = this.stretchesBackup.map(s => Object.assign({}, s));
     }
 
     finish(cb) {

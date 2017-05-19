@@ -47,23 +47,38 @@ function remoteControlServerSetup() {
         intervalId = setInterval(spawn, argv.interval / getFastForward());
     };
 
+    const updateParams = function (newArgv) {
+        const willUpdateInterval = newArgv.interval && argv.interval !== newArgv.interval;
+        const willUpdateSleep = newArgv.sleep && argv.sleep !== newArgv.sleep;
+        const willUpdateFastForward = newArgv.fast && argv.fast !== newArgv.fast;
+
+        Object.assign(argv, newArgv);
+
+        if (willUpdateFastForward) {
+            updateInterval();
+            updateSleep();
+        } else {
+            willUpdateInterval && updateInterval();
+            willUpdateSleep && updateSleep();
+        }
+    };
+
+    const changeRoad = (newArgv) => {
+        const changeStr = newArgv['change-road'];
+        if (!changeStr) {
+            return;
+        }
+
+        console.log("c", changeStr);
+        const change = JSON.parse(changeStr);
+        console.log('changeStr', change);
+    };
+
     const server = dnode({
         control: function (newArgv) {
             console.log('----> remote control');
-
-            const willUpdateInterval = newArgv.interval && argv.interval !== newArgv.interval;
-            const willUpdateSleep = newArgv.sleep && argv.sleep !== newArgv.sleep;
-            const willUpdateFastForward = newArgv.fast && argv.fast !== newArgv.fast;
-
-            Object.assign(argv, newArgv);
-
-            if (willUpdateFastForward) {
-                updateInterval();
-                updateSleep();
-            } else {
-                willUpdateInterval && updateInterval();
-                willUpdateSleep && updateSleep();
-            }
+            updateParams(newArgv);
+            changeRoad(newArgv);
         }
     });
 
