@@ -61,18 +61,18 @@ function parseOptions(withDefaults) {
         },
         'change-road': {
             alias: 'c',
-            describe: 'update stretch range {from:%, to:%, lanes:?, velocity:?}'
+            describe: 'update stretch range i.e \'{"from": 0.1, "to": 0.2, "lanes": 3, "velocity": 100}\''
         },
         'reset-road': {
             alias: 'r',
-            describe: 'reset road stretches to its default'
+            describe: 'reset road stretches'
         }
     };
 
     const yargs = require('yargs');
 
     configureOptions(yargs, options, withDefaults);
-    return clearArgv(yargs.argv, withDefaults);
+    return clearArgv(yargs.help().argv, withDefaults);
 }
 
 module.exports = parseOptions;
