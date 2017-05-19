@@ -62,6 +62,10 @@ function parseOptions(withDefaults) {
         'change-road': {
             alias: 'c',
             describe: 'update stretch range {from:%, to:%, lanes:?, velocity:?}'
+        },
+        'reset-road': {
+            alias: 'r',
+            describe: 'reset road stretches to its default'
         }
     };
 
