@@ -17,8 +17,22 @@ const road = new Road(bandeirantes);
 let intervalId = setInterval(spawn, argv.interval / getFastForward());
 
 function emitter(vehicle) {
+
+    const point = road.getPoint(vehicle.distance);
+
+    const event = {
+        simulationId: road.simulationId,
+        vehicleId: vehicle.id,
+        timestamp: new Date().getTime(),
+        velocity: vehicle.velocity,
+        location: {
+            lat: point[0],
+            lng: point[1]
+        }
+    };
+
     if (isVerbose()) {
-        console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
+        console.log('Event ->', event.vehicleId, event.timestamp, event.velocity, [point[0], point[1]]);
     }
 }
 

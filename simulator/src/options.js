@@ -67,6 +67,11 @@ function parseOptions(withDefaults) {
             alias: 'r',
             describe: 'reset road stretches'
         },
+        'topic': {
+            alias: 't',
+            describe: 'Pub/Sub topic name to publish events',
+            default: 'events'
+        },
         'verbose': {
             alias: 'v',
             describe: 'print debug information to console',

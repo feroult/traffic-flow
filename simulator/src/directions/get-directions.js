@@ -53,7 +53,6 @@ const interpolate = ({points}, x) => {
         if (segment.accSum > x) {
             p0 = points[i - 1];
             p1 = segment;
-            console.log('i', i);
             return true;
         }
     });

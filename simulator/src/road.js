@@ -2,6 +2,8 @@ const shortid = require('shortid');
 
 const Stretch = require('./stretch');
 
+const interpolate = require('./directions/get-directions').interpolate;
+
 class Road {
 
     constructor(attrs) {
@@ -133,6 +135,9 @@ class Road {
         return (index + 1 < this.stretches.length && this.stretches[index + 1].isFull());
     }
 
+    getPoint(distance) {
+        return interpolate(this, distance / 100);
+    }
 
     static loadConfig(file) {
         const config = require(file);
