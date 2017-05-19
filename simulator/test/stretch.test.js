@@ -105,27 +105,23 @@ describe('Stretch', () => {
             assert.equal(100, stretches.length);
 
             const firstStretch = stretches[0];
-            assert.equal(0.7132534361053113, firstStretch.length);
             assert.equal(5, firstStretch.lanes);
             assert.equal(120, firstStretch.velocity);
 
             for (let i = 11; i < 12; i++) {
                 const toll1 = stretches[i];
-                assert.equal(0.7132534361053113, toll1.length);
                 assert.equal(6, toll1.lanes);
                 assert.equal(30, toll1.velocity);
             }
 
             for (let i = 65; i < 67; i++) {
                 const toll2 = stretches[i];
-                assert.equal(0.7132534361053113, toll2.length);
                 assert.equal(6, toll2.lanes);
                 assert.equal(30, toll2.velocity);
             }
 
             for (let i = 93; i < 100; i++) {
                 const city = stretches[i];
-                assert.equal(0.7132534361053113, city.length);
                 assert.equal(2, city.lanes);
                 assert.equal(90, city.velocity);
             }

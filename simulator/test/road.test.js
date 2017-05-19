@@ -49,6 +49,13 @@ describe('Road', () => {
         });
     });
 
+    describe('#loadConfig', () => {
+        it('loads config from file', () => {
+            const config = Road.loadConfig('../src/data/bandeirantes');
+            assert.equal(100, config.stretches.length);
+        });
+    });
+
     describe('#moveVehicleFromTo', () => {
 
         let vehicle;
@@ -59,7 +66,7 @@ describe('Road', () => {
                 length: 3
             });
         });
-        
+
         it('move vehicle across two stretches', () => {
             const road = new Road({
                 length: 100,

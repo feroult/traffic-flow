@@ -43,7 +43,6 @@ class Stretch {
 
         for (let i = 0; i < params.count; i++) {
             stretches.push({
-                length: params.length / params.count,
                 lanes: params.lanes,
                 velocity: params.velocity
             });

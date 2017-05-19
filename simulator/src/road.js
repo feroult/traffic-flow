@@ -115,6 +115,12 @@ class Road {
     }
 
 
+    static loadConfig(file) {
+        const config = require(file);
+        config.stretches = Stretch.build(config.stretches);
+        return config;
+    }
+
 }
 
 module.exports = Road;
