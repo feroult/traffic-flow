@@ -47,7 +47,7 @@ function parseOptions(withDefaults) {
         'sleep': {
             alias: 's',
             describe: 'vehicles interval (ms) time to emit events',
-            default: 1000,
+            default: 5000,
         },
         'fast-forward': {
             alias: 'fast',

@@ -10,11 +10,11 @@ remoteControlServerSetup();
 
 const bandeirantes = Road.loadConfig('./data/bandeirantes');
 bandeirantes.sleep = getSleep;
-bandeirantes.fastForward = () => argv['fast-forward'];
+bandeirantes.fastForward = getFastForward;
 
 const road = new Road(bandeirantes);
 
-let intervalId = setInterval(spawn, argv.interval);
+let intervalId = setInterval(spawn, argv.interval / getFastForward());
 
 function emitter(vehicle) {
     console.log('v', vehicle.id, vehicle.distance, vehicle.velocity, vehicle.stretchIndex);
@@ -44,7 +44,7 @@ function remoteControlServerSetup() {
 
     const updateInterval = function () {
         clearInterval(intervalId);
-        intervalId = setInterval(spawn, argv.interval);
+        intervalId = setInterval(spawn, argv.interval / getFastForward());
     };
 
     const server = dnode({
@@ -53,10 +53,17 @@ function remoteControlServerSetup() {
 
             const willUpdateInterval = newArgv.interval && argv.interval !== newArgv.interval;
             const willUpdateSleep = newArgv.sleep && argv.sleep !== newArgv.sleep;
+            const willUpdateFastForward = newArgv.fast && argv.fast !== newArgv.fast;
 
             Object.assign(argv, newArgv);
-            willUpdateInterval && updateInterval();
-            willUpdateSleep && updateSleep();
+
+            if (willUpdateFastForward) {
+                updateInterval();
+                updateSleep();
+            } else {
+                willUpdateInterval && updateInterval();
+                willUpdateSleep && updateSleep();
+            }
         }
     });
 
@@ -65,4 +72,8 @@ function remoteControlServerSetup() {
 
 function getSleep() {
     return argv.sleep;
+}
+
+function getFastForward() {
+    return argv['fast-forward'];
 }
