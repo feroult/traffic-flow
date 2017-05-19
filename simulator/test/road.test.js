@@ -75,7 +75,7 @@ describe('Road', () => {
 
 
             road.change({
-                from: 0.2,
+                from: 0.1,
                 to: 0.3,
                 lanes: 3,
                 velocity: 120
@@ -86,7 +86,8 @@ describe('Road', () => {
             assert.equal(road.stretches[1].lanes, 3);
             assert.equal(road.stretches[1].velocity, 120);
             assert.equal(road.stretches[2].lanes, 3);
-            assert.equal(road.stretches[3].lanes, 2);
+            assert.equal(road.stretches[3].lanes, 2);0
+
         });
 
         it('can be reseted', () => {
@@ -95,9 +96,9 @@ describe('Road', () => {
                 stretches: stretches
             });
 
-            
+
             road.change({
-                from: 0.2,
+                from: 0.1,
                 to: 0.3,
                 lanes: 3
             });

@@ -108,7 +108,7 @@ class Road {
     }
 
     change(params) {
-        const count = this.stretches.length - 1;
+        const count = this.stretches.length;
 
         const from = Math.floor(count * params.from);
         const to = Math.ceil(count * params.to);
