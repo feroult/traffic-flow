@@ -1,10 +1,27 @@
 {
   "stretches": {
-    "number": 100,
+    "count": 100,
     "lanes": 5,
     "velocity": 120,
     "custom": [
-      
+      {
+        "from": 0.3,
+        "to": 0.302,
+        "lanes": 6,
+        "velocity": 30
+      },
+      {
+        "from": 0.7,
+        "to": 0.702,
+        "lanes": 6,
+        "velocity": 30
+      },
+      {
+        "from": 0.9,
+        "to": 1,
+        "lanes": 2,
+        "velocity": 70
+      }
     ]
   },
   "points": [

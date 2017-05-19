@@ -12,7 +12,6 @@
     "@google/maps": "^0.3.1",
     "@mapbox/polyline": "^0.2.0",
     "dnode": "^1.2.2",
-    "linear-solve": "^1.2.1",
     "shortid": "^2.2.8",
     "yargs": "^8.0.1"
   },

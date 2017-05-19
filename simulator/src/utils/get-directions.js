@@ -1,6 +1,5 @@
 const config = require('./config');
 const fs = require('fs');
-const ls = require('linear-solve');
 
 const polyline = require('@mapbox/polyline');
 const googleMaps = require('@google/maps').createClient({
@@ -8,7 +7,7 @@ const googleMaps = require('@google/maps').createClient({
 });
 
 const sq = x => x * x;
-const dist = (p1, p2) => Math.sqrt(sq(p1[0] - p2[0]) + sq(p1[1] - p2[1])) * 100;
+const dist = (p1, p2) => Math.sqrt(sq(p1[0] - p2[0]) + sq(p1[1] - p2[1]));
 
 const extractData = cb => {
     googleMaps.directions({
@@ -54,16 +53,19 @@ const interpolate = ({points}, x) => {
         if (segment.accSum > x) {
             p0 = points[i - 1];
             p1 = segment;
+            console.log('i', i);
             return true;
         }
     });
-    let diff = x - p0.accSum;
     let totalDist = dist(p0.point, p1.point);
-    let x0 = p0.point[0], x1 = p1.point[0], y0 = p0.point[1], y1 = p1.point[1];
-    let fit = ls.solve([[x0, 1], [x1, 1]], [y0, y1]);
-    let fitfn = x => x * fit[0] + fit[1];
-    let interpolatedX = x0 + diff * Math.cos(Math.atan2(y1 - y0, x1 - x0));
-    return [interpolatedX, fitfn(interpolatedX)];
+
+    const interpolateFactor = (x - p0.accSum) / totalDist;
+
+    const x1 = p0.point[1] + interpolateFactor * (p1.point[1] - p0.point[1]);
+    const y1 = p0.point[0] + interpolateFactor * (p1.point[0] - p0.point[0]);
+
+
+    return [y1, x1];
 };
 
 module.exports = {saveDataToFile, readDataFromFile, extractData, maxDistance, interpolate};
