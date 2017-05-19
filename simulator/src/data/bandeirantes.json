@@ -5,22 +5,22 @@
     "velocity": 120,
     "custom": [
       {
-        "from": 0.3,
-        "to": 0.302,
+        "from": 0.112,
+        "to": 0.125,
         "lanes": 6,
         "velocity": 30
       },
       {
-        "from": 0.7,
-        "to": 0.702,
+        "from": 0.655,
+        "to": 0.664,
         "lanes": 6,
         "velocity": 30
       },
       {
-        "from": 0.9,
+        "from": 0.935,
         "to": 1,
         "lanes": 2,
-        "velocity": 70
+        "velocity": 90
       }
     ]
   },
