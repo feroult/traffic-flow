@@ -21,7 +21,9 @@ let intervalId = setInterval(spawn, argv.interval / getFastForward());
 
 function emitter(vehicle) {
 
-    const point = road.getPoint(vehicle.distance);
+    const info = road.getPoint(vehicle.distance, vehicle.segmentIndex);
+    const point = info.point;
+    vehicle.segmentIndex = info.segmentIndex;
 
     const event = {
         simulationId: road.simulationId,

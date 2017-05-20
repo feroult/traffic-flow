@@ -46,7 +46,8 @@ class Vehicle {
 
         this.emitter && this.emitter(this);
 
-        if (this.distance >= this.road.length) {
+        if (this.distance + 0.00001 >= this.road.length) {
+            console.log(this.id, 'Exit road.');
             this.road.removeVehicle(this);
         } else {
             this.scheduleNextMove();

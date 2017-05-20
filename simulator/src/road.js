@@ -137,7 +137,7 @@ class Road {
         return (index + 1 < this.stretches.length && this.stretches[index + 1].isFull());
     }
 
-    getPoint(distance) {
+    getPoint(distance, segmentIndex) {
         return interpolate(this, distance / 100);
     }
 

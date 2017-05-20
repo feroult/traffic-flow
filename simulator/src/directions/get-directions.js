@@ -36,7 +36,7 @@ const extractData = cb => {
 };
 
 const saveDataToFile = (file, cb) => extractData(parsed => {
-    fs.writeFileSync(file, JSON.stringify(parsed))
+    fs.writeFileSync(file, JSON.stringify(parsed));
     cb(parsed);
 });
 
@@ -46,16 +46,25 @@ const readDataFromFile = file => {
 
 const maxDistance = ({points}) => points[points.length - 1].accSum;
 
-const interpolate = ({points}, x) => {
-    let p0, p1;
+const interpolate = ({points}, x, segmentIndex) => {
+    let i, p0, p1;
 
-    points.some((segment, i) => {
-        if (segment.accSum > x) {
+    segmentIndex = segmentIndex | 0;
+
+    for (i = segmentIndex; i < points.length; i++) {
+        const segment = points[i];
+        if (segment.accSum >= x) {
             p0 = points[i - 1];
             p1 = segment;
-            return true;
+            break;
         }
-    });
+    }
+
+    if (!p0 && (points[points.length - 1].accSum + 0.0001 > x)) {
+        p0 = points[points.length - 2];
+        p1 = points[points.length - 1];
+    }
+
     let totalDist = dist(p0.point, p1.point);
 
     const interpolateFactor = (x - p0.accSum) / totalDist;
@@ -64,7 +73,7 @@ const interpolate = ({points}, x) => {
     const y1 = p0.point[0] + interpolateFactor * (p1.point[0] - p0.point[0]);
 
 
-    return [y1, x1];
+    return {segmentIndex: i, point: [y1, x1]};
 };
 
 module.exports = {saveDataToFile, readDataFromFile, extractData, maxDistance, interpolate};
