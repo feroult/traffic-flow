@@ -86,7 +86,8 @@ describe('Road', () => {
             assert.equal(road.stretches[1].lanes, 3);
             assert.equal(road.stretches[1].velocity, 120);
             assert.equal(road.stretches[2].lanes, 3);
-            assert.equal(road.stretches[3].lanes, 2);0
+            assert.equal(road.stretches[3].lanes, 2);
+            0
 
         });
 
@@ -118,7 +119,6 @@ describe('Road', () => {
         });
     });
 
-
     describe('#moveVehicleFromTo', () => {
 
         let vehicle;
@@ -145,6 +145,29 @@ describe('Road', () => {
 
             assert.equal(vehicle.distance, 70);
         });
+
+        it('move vehicle across four stretches', () => {
+            const road = new Road({
+                length: 100,
+                stretches: [{
+                    velocity: 100,
+                }, {
+                    velocity: 100,
+                }, {
+                    velocity: 100,
+                }, {
+                    velocity: 100,
+                }]
+            });
+
+            vehicle.distance = 20;
+            vehicle.stretchIndex = 0;
+            road.moveVehicleTo(vehicle, 0.7);
+
+            assert.equal(vehicle.distance, 90);
+            assert.equal(vehicle.stretchIndex, 3);
+        });
+
 
         it('move vehicle across a stretch with traffic', () => {
             const road = new Road({

@@ -63,10 +63,12 @@ class Road {
             if (projectedIndex === index) {
                 distance += delta;
             } else {
-                const partialDelta = ((index + 1) * this.stretchesLength) - distance;
+                var newDistance = ((index + 1) * this.stretchesLength);
+                const partialDelta = newDistance - distance;
                 const partialHours = partialDelta / velocity;
+
                 hours -= partialHours;
-                distance += partialDelta;
+                distance = newDistance + 0.00001;
             }
 
         } while (index !== projectedIndex);
