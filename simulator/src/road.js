@@ -55,7 +55,12 @@ class Road {
                 }
             }
 
-            velocity = stretch.computeVelocity(targetVelocity);
+            velocity = stretch.computeVelocity(targetVelocity, `index=${index}`);
+
+            if (velocity < 20) {
+                console.log('slow', vehicle.id, velocity, index);
+            }
+
             const delta = velocity * hours;
 
             projectedIndex = this.getStretchIndex(distance + delta);
@@ -80,14 +85,25 @@ class Road {
     }
 
     _updateStretchesTraffic(vehicle, projectedIndex) {
-        if (vehicle.stretchIndex && vehicle.stretchIndex !== projectedIndex) {
+        if (vehicle.stretchIndex !== undefined && vehicle.stretchIndex !== projectedIndex) {
             this.stretches[vehicle.stretchIndex].exitVehicle(vehicle);
             vehicle.stretchIndex = undefined;
         }
 
         if (projectedIndex !== undefined && projectedIndex < this.stretches.length &&
             projectedIndex !== vehicle.stretchIndex) {
-            this.stretches[projectedIndex].enterVehicle(vehicle);
+            var stretch = this.stretches[projectedIndex];
+
+            if (!stretch) {
+                console.log('ops', projectedIndex, this.stretches.length, this.stretches);
+            }
+
+            stretch.enterVehicle(vehicle);
+
+            if (stretch.trafficLoad() > 0.20) {
+                console.log('COUNT', `index=${projectedIndex}`, `count=${stretch.vehicleCount}`, `load=${stretch.trafficLoad()}`, `full=${stretch.isFull()}`);
+            }
+
             vehicle.stretchIndex = projectedIndex;
         }
     }

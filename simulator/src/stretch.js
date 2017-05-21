@@ -5,6 +5,7 @@ class Stretch {
 
     constructor(attrs) {
         this.traffic = 0;
+        this.vehicleCount = 0;
         this.maxTraffic = attrs.lanes * attrs.length;
 
         Object.assign(this, attrs);
@@ -15,10 +16,12 @@ class Stretch {
     }
 
     enterVehicle(vehicle) {
+        this.vehicleCount++;
         this.traffic += (vehicle.length / 1000);
     }
 
     exitVehicle(vehicle) {
+        this.vehicleCount--;
         this.traffic -= (vehicle.length / 1000);
     }
 
@@ -26,11 +29,14 @@ class Stretch {
         return this.traffic >= this.maxTraffic;
     }
 
-    computeVelocity(targetVelocity) {
+    computeVelocity(targetVelocity, index) {
         let velocity = (this.velocity < targetVelocity) ? this.velocity : targetVelocity;
 
         if (this.trafficLoad() > TRAFFIC_SLOWDOWN_THRESHOLD) {
             const slowDownFactor = (this.trafficLoad() - TRAFFIC_SLOWDOWN_THRESHOLD ) / ( 1 - TRAFFIC_SLOWDOWN_THRESHOLD);
+
+            console.log('Traffic', slowDownFactor, index);
+
             velocity = velocity * (1 - slowDownFactor);
             return velocity > MINIMUN_VELOCITY_THRESHOLD ? velocity : MINIMUN_VELOCITY_THRESHOLD;
         }
