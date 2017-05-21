@@ -53,7 +53,7 @@ describe('Road', () => {
         it('loads config from file', () => {
             const config = Road.loadConfig('../src/data/bandeirantes');
             assert.equal(71.32534361053114, config.length);
-            assert.equal(100, config.stretches.length);
+            assert.equal(1000, config.stretches.length);
         });
     });
 
@@ -143,7 +143,7 @@ describe('Road', () => {
             vehicle.distance = 40;
             road.moveVehicleTo(vehicle, 0.5);
 
-            assert.equal(vehicle.distance, 70);
+            assert.approximately(vehicle.distance, 70, 0.0001);
         });
 
         it('move vehicle across four stretches', () => {
@@ -164,7 +164,7 @@ describe('Road', () => {
             vehicle.stretchIndex = 0;
             road.moveVehicleTo(vehicle, 0.7);
 
-            assert.equal(vehicle.distance, 90);
+            assert.approximately(vehicle.distance, 90, 0.0001);
             assert.equal(vehicle.stretchIndex, 3);
         });
 
@@ -201,7 +201,7 @@ describe('Road', () => {
             vehicle.distance = 40;
             road.moveVehicleTo(vehicle, 0.5);
 
-            assert.equal(vehicle.distance, 50);
+            assert.approximately(vehicle.distance, 50, 0.0001);
         });
 
         it('stops the vehicles if the current and next stretch is full', () => {
@@ -249,7 +249,7 @@ describe('Road', () => {
             road.finish(() => {
                 var lastIndex = events.length - 1;
                 assert.isAbove(lastIndex, 0);
-                assert.equal(events[lastIndex].distance, 100);
+                assert.approximately(events[lastIndex].distance, 100, 0.0001);
                 assert.isAtLeast(events[lastIndex].time, 1);
                 done();
             });
@@ -280,7 +280,7 @@ describe('Road', () => {
             road.finish(() => {
                 var lastIndex = events.length - 1;
                 assert.isAbove(lastIndex, 0);
-                assert.equal(events[lastIndex].distance, 100);
+                assert.approximately(events[lastIndex].distance, 100, 0.0001);
                 assert.isAtLeast(events[lastIndex].time, 1.5);
                 done();
             });
@@ -317,7 +317,7 @@ describe('Road', () => {
             road.finish(() => {
                 var lastIndex = events.length - 1;
                 assert.isAbove(lastIndex, 0);
-                assert.equal(events[lastIndex].distance, 100);
+                assert.approximately(events[lastIndex].distance, 100, 0.0001);
                 assert.isAtLeast(events[lastIndex].time, 1.2);
                 done();
             });
