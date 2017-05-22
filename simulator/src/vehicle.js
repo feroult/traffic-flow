@@ -11,6 +11,7 @@ class Vehicle {
         this.road = road;
         this.time = 0;
         this.distance = 0;
+        this.stretchIndex = undefined;
 
         this.scheduleNextMove();
     }

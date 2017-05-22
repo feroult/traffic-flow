@@ -201,7 +201,7 @@ describe('Road', () => {
             vehicle.distance = 40;
             road.moveVehicleTo(vehicle, 0.5);
 
-            assert.approximately(vehicle.distance, 50, 0.0001);
+            assert.equal(vehicle.distance, 49.999);
         });
 
         it('stops the vehicles if the current and next stretch is full', () => {

@@ -23,6 +23,9 @@ class Stretch {
     exitVehicle(vehicle) {
         this.vehicleCount--;
         this.traffic -= (vehicle.length / 1000);
+        if (this.traffic < 0) {
+            this.traffic = 0;
+        }
     }
 
     isFull() {

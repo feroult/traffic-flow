@@ -29,6 +29,7 @@ class Road {
 
     moveVehicleTo(vehicle, elapsedHours) {
         vehicle.distance = this._computeVehicleNewDistance(vehicle, elapsedHours);
+        console.log('moveTo', `stretch=${vehicle.stretchIndex}`, `velocity=${vehicle.velocity}`, `id=${vehicle.id}`);
     }
 
     _computeVehicleNewDistance(vehicle, elapsedHours) {
@@ -48,11 +49,8 @@ class Road {
 
             stretch = this.getStretch(distance);
 
-            if (stretch.isFull()) {
-                if (this.getStretchIndex(vehicle.distance) !== index ||
-                    this._nextStretchIsFull(index)) {
-                    break;
-                }
+            if (stretch.isFull() && vehicle.stretchIndex !== index) {
+                break;
             }
 
             velocity = stretch.computeVelocity(targetVelocity, `index=${index}`);
@@ -68,7 +66,13 @@ class Road {
             if (projectedIndex === index) {
                 distance += delta;
             } else {
-                var newDistance = ((index + 1) * this.stretchesLength);
+                const newDistance = ((index + 1) * this.stretchesLength);
+
+                if (this._nextStretchIsFull(index)) {
+                    distance = newDistance - 0.001;
+                    break;
+                }
+
                 const partialDelta = newDistance - distance;
                 const partialHours = partialDelta / velocity;
 
@@ -78,33 +82,39 @@ class Road {
 
         } while (index !== projectedIndex);
 
-        this._updateStretchesTraffic(vehicle, projectedIndex);
-        vehicle.velocity = velocity;
+        if (vehicle.distance !== distance) {
+            this._updateStretchIndex(vehicle, index);
+            vehicle.velocity = velocity;
+        } else {
+            if(vehicle.distance === 0) {
+                console.log('xxx', vehicle.id);
+            }
+        }
 
         return distance;
     }
 
-    _updateStretchesTraffic(vehicle, projectedIndex) {
-        if (vehicle.stretchIndex !== undefined && vehicle.stretchIndex !== projectedIndex) {
+    _updateStretchIndex(vehicle, newIndex) {
+        if (vehicle.stretchIndex !== undefined && vehicle.stretchIndex !== newIndex) {
             this.stretches[vehicle.stretchIndex].exitVehicle(vehicle);
             vehicle.stretchIndex = undefined;
         }
 
-        if (projectedIndex !== undefined && projectedIndex < this.stretches.length &&
-            projectedIndex !== vehicle.stretchIndex) {
-            var stretch = this.stretches[projectedIndex];
+        if (newIndex !== undefined && newIndex < this.stretches.length &&
+            newIndex !== vehicle.stretchIndex) {
+            var stretch = this.stretches[newIndex];
 
             if (!stretch) {
-                console.log('ops', projectedIndex, this.stretches.length, this.stretches);
+                console.log('ops', newIndex, this.stretches.length, this.stretches);
             }
 
             stretch.enterVehicle(vehicle);
 
-            if (stretch.trafficLoad() > 0.20) {
-                console.log('COUNT', `index=${projectedIndex}`, `count=${stretch.vehicleCount}`, `load=${stretch.trafficLoad()}`, `full=${stretch.isFull()}`);
-            }
+            // if (stretch.trafficLoad() > 0.20) {
+                console.log('COUNT', `index=${newIndex}`, `count=${stretch.vehicleCount}`, `load=${stretch.trafficLoad()}`, `full=${stretch.isFull()}`);
+            // }
 
-            vehicle.stretchIndex = projectedIndex;
+            vehicle.stretchIndex = newIndex;
         }
     }
 

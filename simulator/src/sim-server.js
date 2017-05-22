@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const dnode = require('dnode');
+const fs = require('fs');
 
 const publish = require('./pubsub/publish');
 
@@ -46,7 +47,9 @@ function emitter(vehicle) {
 }
 
 function randomTargetVelocity() {
-    return Math.floor(Math.random() * argv['max-velocity']) + argv['min-velocity'];
+    var min = argv['min-velocity'];
+    var max = argv['max-velocity'];
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 function spawn() {
@@ -109,12 +112,23 @@ function remoteControlServerSetup() {
         road.reset();
     };
 
+    const debug = (newArgv) => {
+        const showDebug = newArgv['debug'];
+        if (!showDebug) {
+            return;
+        }
+
+        fs.writeFile(`/tmp/sim.debug`, JSON.stringify(road.stretches, null, 4));
+    };
+
+
     const server = dnode({
         control: function (newArgv) {
             console.log('----> remote control');
             updateParams(newArgv);
             changeRoad(newArgv);
             resetRoad(newArgv);
+            debug(newArgv);
         }
     });
 
