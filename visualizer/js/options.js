@@ -4,8 +4,12 @@ const VEHICLES_FADEOUT_PERIOD = 5000; // start fading all points, including head
 const DUPLICHECK_PERIOD = 30000; // keep ckecking ackIds for duplicates for 30 sec after first arrival
 const DUPLICKECK_CLEANING_PERIOD = 1333; // check duplicates database for old entries to clean every 1.3 sec
 
-const PUBSUB_SUBSCRIPTION_NAME = 'nytt-visualizer-web-028368';
-const PUBSUB_SUBSCRIPTION = 'projects/pubsub-public-data/subscriptions/web';
+const PROJECT_ID = 'traffic-flow-app';
+const TOPIC_ID = 'projects/traffic-flow-app/topics/events';
+
+const PUBSUB_SUBSCRIPTION_NAME = 'traffic-flow-web';
+const PUBSUB_SUBSCRIPTION = 'projects/traffic-flow-app/subscriptions/dashboard';
+
 const PUBSUB_MAXMESSAGES = 1000; // number of messages to get from PubSub at once
 const PUBSUB_MAXCONCURRENT = 5; // number of concurrent requests to PubSub
 const PUBSUB_RETRY_PERIOD = 2000; // retry before the 90sec timeout to make system responsive to new data
