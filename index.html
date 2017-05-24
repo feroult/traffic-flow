@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traffic Flow</title>
+
+    <!-- setup -->
+    <script src="js/config.js"></script>
+    <script src="js/globals.js"></script>
+
+    <!-- Google API scripts -->
+    <script defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDD2NlEXV-Cp3w148ZpPFGwl8Buhw9dxF4&libraries=visualization,geometry&callback=initMap"></script>
+    <script defer src="https://apis.google.com/js/api.js?onload=handleClientLoad"></script>
+    <script src="js/google-api-access.js"></script>
+</head>
+
+<body>
+    <button id="sign-in">Sign In</button>
+    <button id="sign-out">Sign Out</button>
+
+    <div id="map"></div>
+</body>
+
+</html>
