@@ -27,9 +27,9 @@ function loadAuth2() {
 
 function initAuth2() {
     return gapi.auth2.init({
-        client_id: '19808069448-df7e5a57c3ftmfk3e9tptk6s7942qpah.apps.googleusercontent.com',
-        scope: 'profile https://www.googleapis.com/auth/pubsub https://www.googleapis.com/auth/cloudplatformprojects.readonly'
-    }).then() // The API does not return a Promise but an object that returns a Promise from its .then() function
+        client_id: '832425333292-dppbb60t194ic98obkrohfaa0rulcpts.apps.googleusercontent.com',
+        scope: 'profile https://www.googleapis.com/auth/pubsub'
+    }).then(); // The API does not return a Promise but an object that returns a Promise from its .then() function
 }
 
 function checkSignIn() {
