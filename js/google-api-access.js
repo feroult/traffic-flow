@@ -59,3 +59,11 @@ function updateSigninStatus(isSignedIn) {
         console.log('not logged');
     }
 }
+
+function signIn() {
+    auth2.signIn();
+}
+
+function signOut() {
+    auth2.signOut();
+}
