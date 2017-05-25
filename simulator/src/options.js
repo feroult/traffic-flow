@@ -14,7 +14,7 @@ function clearArgv(argv, withDefaults) {
         return argv;
     }
     for (let key in argv) {
-        if (argv.hasOwnProperty(key) && !argv[key]) {
+        if (argv.hasOwnProperty(key) && argv[key] === undefined) {
             delete argv[key];
         }
     }
