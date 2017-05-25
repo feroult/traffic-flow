@@ -15,7 +15,7 @@ function start() {
         ).then(
         function () {
             if (auth2.isSignedIn.get()) {
-                console.log('here');
+                startPulling();
             }
         }
     );
