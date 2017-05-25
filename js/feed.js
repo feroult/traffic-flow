@@ -1,42 +1,47 @@
 function startPulling() {
     keepPulling = true;
-    setTimeout(executePull, 0);
+    setTimeout(pullJob, 0);
 
     concurrentPulls = 1;
     duplicates = 0;
+    lastPullSuccess = new Date();
 }
 
-function executePull() {
+function pullJob() {
     if (!keepPulling) {
         return;
     }
 
     fanout();
-    execute();
+    executePull();
 }
 
 function fanout() {
     const now = Date.now();
 
     // relaunch additional concurrent requests if they seem to have been successful in the past and within the MAXCONCURRENT limit
-    for (let i = 0; concurrentpulls < PUBSUB_MAXCONCURRENT && now - lastpullsuccess < PUBSUB_RETRY_PERIOD; i++) {
-        setTimeout(executePull, 100 * i);
+    for (let i = 0; concurrentPulls < PUBSUB_MAXCONCURRENT && now - lastPullSuccess < PUBSUB_RETRY_PERIOD; i++) {
+        setTimeout(pullJob, 100 * i);
         concurrentPulls++;
     }
 }
 
-function execute() {
+function executePull() {
     const request = pubsub.projects.subscriptions.pull({
         subscription: PUBSUB_SUBSCRIPTION,
         max_messages: PUBSUB_MAXMESSAGES
     });
 
+    console.log('here 0');
+
     request.execute(function (response) {
+        console.log('here X');
+
         if (concurrentPulls > 0) {
             concurrentPulls--;
         }
 
-        lastpullsuccess = Date.now();
+        lastPullSuccess = Date.now();
 
         if (hasMessages(response)) {
             const messages = parseMessages(response);
@@ -65,6 +70,7 @@ function parseAckIds(resp) {
 
 function ackReceivedMessages(ackIds) {
     if (ackIds.length <= 0) {
+        console.log('here');
         return;
     }
 
@@ -82,7 +88,7 @@ function executeAckRequest(ackIds) {
 
     request.execute(function () {
         if (concurrentPulls < PUBSUB_MAXCONCURRENT) {
-            setTimeout(executePull, 100);
+            setTimeout(pullJob, 100);
             concurrentPulls++
         }
     })

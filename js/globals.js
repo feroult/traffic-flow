@@ -4,6 +4,6 @@ let pubsub;
 
 let keepPulling = false;
 let concurrentPulls = 0;
-let lastpullsuccess;
+let lastPullSuccess;
 let allAckIds = {};
 let duplicates = 0;
