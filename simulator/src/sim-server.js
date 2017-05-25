@@ -41,9 +41,9 @@ function emitter(vehicle) {
         console.log('Event ->', event.vehicleId, event.timestamp, event.velocity, [point[0], point[1]]);
     }
 
-    // publish(argv, event).catch(err => {
-    //     console.log('Error publishing', err);
-    // });
+    publish(argv, event).catch(err => {
+        console.log('Error publishing', err);
+    });
 }
 
 function randomTargetVelocity() {
