@@ -66,7 +66,6 @@ function parseAckIds(resp) {
 
 function ackReceivedMessages(ackIds) {
     if (ackIds.length <= 0) {
-        console.log('here');
         return;
     }
 
