@@ -2,10 +2,11 @@ let auth2; // The Sign-In object.
 
 // Google Maps API initialisation
 function initMap() {
+    console.log('here MAP');
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 13,
-        center: {lat: 40.75144, lng: -74.00331},
-        mapTypeId: google.maps.MapTypeId.SATELLITE
+        zoom: 11,
+        center: {lat: -23.327124, lng: -46.840602},
+        mapTypeId: google.maps.MapTypeId.ROADMAP
     });
 }
 
