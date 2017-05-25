@@ -20,7 +20,9 @@ function fanout() {
     const now = Date.now();
 
     // relaunch additional concurrent requests if they seem to have been successful in the past and within the MAXCONCURRENT limit
-    for (let i = 0; concurrentPulls < PUBSUB_MAXCONCURRENT && now - lastPullSuccess < PUBSUB_RETRY_PERIOD; i++) {
+    //  && now - lastPullSuccess < PUBSUB_RETRY_PERIOD
+
+    for (let i = 0; concurrentPulls < PUBSUB_MAXCONCURRENT; i++) {
         setTimeout(pullJob, 100 * i);
         concurrentPulls++;
     }

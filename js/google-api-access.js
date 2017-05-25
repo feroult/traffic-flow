@@ -1,8 +1,6 @@
 let auth2; // The Sign-In object.
 
-// Google Maps API initialisation
 function initMap() {
-    console.log('here MAP');
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 11,
         center: {lat: -23.327124, lng: -46.840602},
@@ -10,7 +8,6 @@ function initMap() {
     });
 }
 
-// Google Auth2, PubSub, CRM API initialisation
 function handleClientLoad() {
     authPromise =
         loadAuth2()
