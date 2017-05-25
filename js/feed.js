@@ -32,11 +32,7 @@ function executePull() {
         max_messages: PUBSUB_MAXMESSAGES
     });
 
-    console.log('here 0');
-
     request.execute(function (response) {
-        console.log('here X');
-
         if (concurrentPulls > 0) {
             concurrentPulls--;
         }
@@ -46,7 +42,7 @@ function executePull() {
         if (hasMessages(response)) {
             const messages = parseMessages(response);
             const ackIds = parseAckIds(response);
-
+            addVehicleMarkers(messages);
             ackReceivedMessages(ackIds)
         }
     });
@@ -104,3 +100,4 @@ function countDuplicates(ackIds) {
         }
     });
 }
+
