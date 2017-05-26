@@ -2,8 +2,7 @@ function startPulling() {
     keepPulling = true;
     setTimeout(pullJob, 0);
 
-    concurrentPulls = 1;
-    duplicates = 0;
+    resetGlobals();
     lastPullSuccess = new Date();
 }
 

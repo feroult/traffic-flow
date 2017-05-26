@@ -1,8 +1,4 @@
-const VEHICLES_UPDATE_PERIOD = 250; // fade the weights of old points on the map by a unit every 1 second, keep head points
-const VEHICLES_FADEOUT_PERIOD = 5000; // start fading all points, including head points, after 5 sec
-
-const DUPLICHECK_PERIOD = 30000; // keep ckecking ackIds for duplicates for 30 sec after first arrival
-const DUPLICKECK_CLEANING_PERIOD = 1333; // check duplicates database for old entries to clean every 1.3 sec
+const VEHICLES_FADEOUT_PERIOD = 15000; // start fading all points, including head points, after 15 sec
 
 const PROJECT_ID = 'traffic-flow-app';
 const TOPIC_ID = 'projects/traffic-flow-app/topics/events';

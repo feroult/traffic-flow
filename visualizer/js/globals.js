@@ -3,10 +3,20 @@ let map;
 let pubsub;
 
 let keepPulling = false;
-let concurrentPulls = 0;
+let concurrentPulls;
 let lastPullSuccess;
-let allAckIds = {};
-let duplicates = 0;
+let allAckIds;
+let duplicates;
 
-// markers
-let vehicles = {};
+let vehicles;
+let elements;
+
+function resetGlobals() {
+    concurrentPulls = 0;
+    allAckIds = {};
+    duplicates = 0;
+    vehicles = {};
+    elements = [];
+}
+
+resetGlobals();
