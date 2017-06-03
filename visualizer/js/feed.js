@@ -43,12 +43,12 @@ function executePull() {
         if (hasMessages(response)) {
             const messages = parseMessages(response);
             const ackIds = parseAckIds(response);
-            addVehicleMarkers(messages);
+            // addVehicleMarkers(messages);
+            printCounts(messages);
             ackReceivedMessages(ackIds)
         }
     });
 }
-
 function hasMessages(resp) {
     return 'receivedMessages' in resp && resp.receivedMessages.length > 0;
 }
@@ -71,7 +71,7 @@ function ackReceivedMessages(ackIds) {
     }
 
     countDuplicates(ackIds);
-    console.log("Received " + ackIds.length + " PubSub messages. Duplicates so far: " + duplicates);
+    // console.log("Received " + ackIds.length + " PubSub messages. Duplicates so far: " + duplicates);
 
     executeAckRequest(ackIds);
 }
@@ -101,3 +101,9 @@ function countDuplicates(ackIds) {
     });
 }
 
+var printCounts = function (messages) {
+    for (let i = 0; i < messages.length; i++) {
+        console.log('m', 'vehicle=', messages[i].vehicleId, 'count=', messages[i].count);
+    }
+
+};

@@ -16,11 +16,20 @@
 
 package io.github.feroult.dataflow;
 
+import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.coders.TableRowJsonCoder;
 import com.google.cloud.dataflow.sdk.io.PubsubIO;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
+import com.google.cloud.dataflow.sdk.transforms.Count;
+import com.google.cloud.dataflow.sdk.transforms.MapElements;
+import com.google.cloud.dataflow.sdk.transforms.RemoveDuplicates;
+import com.google.cloud.dataflow.sdk.transforms.SimpleFunction;
+import com.google.cloud.dataflow.sdk.transforms.windowing.*;
+import com.google.cloud.dataflow.sdk.values.KV;
+import com.google.cloud.dataflow.sdk.values.PCollection;
 import io.github.feroult.dataflow.utils.CustomPipelineOptions;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +53,73 @@ public class TrafficFlow {
                 PipelineOptionsFactory.fromArgs(args).withValidation().as(CustomPipelineOptions.class);
         Pipeline p = Pipeline.create(options);
 
-        p.apply(PubsubIO.Read.named("read from PubSub")
+        PCollection<String> input = p.apply(PubsubIO.Read.named("read from PubSub")
                 .topic(String.format("projects/%s/topics/%s", options.getSourceProject(), options.getSourceTopic()))
                 .timestampLabel("ts")
                 .withCoder(TableRowJsonCoder.of()))
+                .apply("mark events", MapElements.via(new ExtractId()));
 
+//        PCollection<String> apply = input.apply("mark events", MapElements.via(new ExtractId()));
+
+//        PCollection<Long> result = input.apply("window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(1))).
+//                triggering(
+//                        AfterWatermark.pastEndOfWindow()
+//                                .withEarlyFirings(AfterProcessingTime.pastFirstElementInPane()
+//                                        .plusDelayOf(Duration.standardSeconds(5))))
+//                .accumulatingFiredPanes()
+//                .withAllowedLateness(Duration.ZERO))
+//                .apply("mark events", MapElements.via(new ExtractId()))
+//                .apply(RemoveDuplicates.create())
+//                .apply(Count.<String>globally().withoutDefaults());
+
+//        PCollection<Long> result = input
+//                .apply("window", Window.<String>into(FixedWindows.of(Duration.standardHours(1))).
+//                        triggering(AfterPane.elementCountAtLeast(1))
+//                        .withAllowedLateness(Duration.ZERO)
+//                        .accumulatingFiredPanes())
+//                .apply(RemoveDuplicates.create())
+//                .apply(Window.discardingFiredPanes())
+//                .apply(Count.<String>globally().withoutDefaults());
+        PCollection<Long> result = input
+                .apply("window", Window.<String>into(FixedWindows.of(Duration.standardHours(1))).
+                        triggering(AfterPane.elementCountAtLeast(1))
+                        .withAllowedLateness(Duration.ZERO)
+                        .accumulatingFiredPanes())
+                .apply(RemoveDuplicates.create())
+                .apply(Window
+                        .<String>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane())).
+                                accumulatingFiredPanes())
+                .apply(Count.<String>globally().withoutDefaults());
+
+        result
+                .apply("format", MapElements.via(new FormatCounter()))
                 .apply(PubsubIO.Write.named("write to PubSub")
                         .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
                         .withCoder(TableRowJsonCoder.of()));
         p.run();
+    }
+
+    private static class MarkEvents extends SimpleFunction<TableRow, KV<String, TableRow>> {
+        @Override
+        public KV<String, TableRow> apply(TableRow row) {
+            String vehicleId = row.get("vehicleId").toString();
+            return KV.of(vehicleId, row);
+        }
+    }
+
+    private static class FormatCounter extends SimpleFunction<Long, TableRow> {
+        @Override
+        public TableRow apply(Long count) {
+            TableRow result = new TableRow();
+            result.set("count", count);
+            return result;
+        }
+    }
+
+    private static class ExtractId extends SimpleFunction<TableRow, String> {
+        @Override
+        public String apply(TableRow event) {
+            return event.get("vehicleId").toString();
+        }
     }
 }
