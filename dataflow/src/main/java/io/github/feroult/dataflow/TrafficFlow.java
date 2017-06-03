@@ -53,33 +53,12 @@ public class TrafficFlow {
                 PipelineOptionsFactory.fromArgs(args).withValidation().as(CustomPipelineOptions.class);
         Pipeline p = Pipeline.create(options);
 
-        PCollection<String> input = p.apply(PubsubIO.Read.named("read from PubSub")
+        PCollection<String> input = p.apply(PubsubIO.Read.named("Read from PubSub")
                 .topic(String.format("projects/%s/topics/%s", options.getSourceProject(), options.getSourceTopic()))
                 .timestampLabel("ts")
                 .withCoder(TableRowJsonCoder.of()))
                 .apply("mark events", MapElements.via(new ExtractId()));
 
-//        PCollection<String> apply = input.apply("mark events", MapElements.via(new ExtractId()));
-
-//        PCollection<Long> result = input.apply("window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(1))).
-//                triggering(
-//                        AfterWatermark.pastEndOfWindow()
-//                                .withEarlyFirings(AfterProcessingTime.pastFirstElementInPane()
-//                                        .plusDelayOf(Duration.standardSeconds(5))))
-//                .accumulatingFiredPanes()
-//                .withAllowedLateness(Duration.ZERO))
-//                .apply("mark events", MapElements.via(new ExtractId()))
-//                .apply(RemoveDuplicates.create())
-//                .apply(Count.<String>globally().withoutDefaults());
-
-//        PCollection<Long> result = input
-//                .apply("window", Window.<String>into(FixedWindows.of(Duration.standardHours(1))).
-//                        triggering(AfterPane.elementCountAtLeast(1))
-//                        .withAllowedLateness(Duration.ZERO)
-//                        .accumulatingFiredPanes())
-//                .apply(RemoveDuplicates.create())
-//                .apply(Window.discardingFiredPanes())
-//                .apply(Count.<String>globally().withoutDefaults());
         PCollection<Long> result = input
                 .apply("window", Window.<String>into(FixedWindows.of(Duration.standardHours(1))).
                         triggering(AfterPane.elementCountAtLeast(1))
@@ -87,7 +66,9 @@ public class TrafficFlow {
                         .accumulatingFiredPanes())
                 .apply(RemoveDuplicates.create())
                 .apply(Window
-                        .<String>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane())).
+                        .<String>triggering(
+                                Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
+                                        .plusDelayOf(Duration.standardSeconds(10)))).
                                 accumulatingFiredPanes())
                 .apply(Count.<String>globally().withoutDefaults());
 
