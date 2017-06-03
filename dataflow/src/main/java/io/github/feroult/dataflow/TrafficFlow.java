@@ -83,7 +83,7 @@ public class TrafficFlow {
                 .apply("remove duplicates", RemoveDuplicates.create())
                 .apply("trigger", Window
                         .<String>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
-                                .plusDelayOf(Duration.standardSeconds(10))))
+                                .plusDelayOf(Duration.standardSeconds(2))))
                         .accumulatingFiredPanes())
                 .apply("count", Count.<String>globally().withoutDefaults());
 
