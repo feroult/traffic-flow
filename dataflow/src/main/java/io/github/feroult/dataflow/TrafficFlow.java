@@ -51,33 +51,47 @@ public class TrafficFlow {
     public static void main(String[] args) {
         CustomPipelineOptions options =
                 PipelineOptionsFactory.fromArgs(args).withValidation().as(CustomPipelineOptions.class);
+
         Pipeline p = Pipeline.create(options);
 
-        PCollection<String> input = p.apply(PubsubIO.Read.named("Read from PubSub")
+        PCollection<TableRow> input = createInput(p, options);
+        PCollection<TableRow> window = createWindow(input);
+
+        createSimulatuionBranch(window, options);
+
+        p.run();
+    }
+
+    private static PCollection<TableRow> createInput(Pipeline p, CustomPipelineOptions options) {
+        return p.apply(PubsubIO.Read.named("read from PubSub")
                 .topic(String.format("projects/%s/topics/%s", options.getSourceProject(), options.getSourceTopic()))
                 .timestampLabel("ts")
-                .withCoder(TableRowJsonCoder.of()))
-                .apply("mark events", MapElements.via(new ExtractId()));
+                .withCoder(TableRowJsonCoder.of()));
+    }
 
-        PCollection<Long> result = input
-                .apply("window", Window.<String>into(FixedWindows.of(Duration.standardHours(1))).
-                        triggering(AfterPane.elementCountAtLeast(1))
+    private static PCollection<TableRow> createWindow(PCollection<TableRow> input) {
+        return input
+                .apply("window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(1)))
+                        .triggering(AfterPane.elementCountAtLeast(1))
                         .withAllowedLateness(Duration.ZERO)
+                        .accumulatingFiredPanes());
+    }
+
+    private static void createSimulatuionBranch(PCollection<TableRow> window, CustomPipelineOptions options) {
+        PCollection<Long> result = window
+                .apply("extract vehicle id", MapElements.via(new ExtractVehicleId()))
+                .apply("remove duplicates", RemoveDuplicates.create())
+                .apply("trigger", Window
+                        .<String>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
+                                .plusDelayOf(Duration.standardSeconds(10))))
                         .accumulatingFiredPanes())
-                .apply(RemoveDuplicates.create())
-                .apply(Window
-                        .<String>triggering(
-                                Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
-                                        .plusDelayOf(Duration.standardSeconds(10)))).
-                                accumulatingFiredPanes())
-                .apply(Count.<String>globally().withoutDefaults());
+                .apply("count", Count.<String>globally().withoutDefaults());
 
         result
                 .apply("format", MapElements.via(new FormatCounter()))
                 .apply(PubsubIO.Write.named("write to PubSub")
                         .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
                         .withCoder(TableRowJsonCoder.of()));
-        p.run();
     }
 
     private static class MarkEvents extends SimpleFunction<TableRow, KV<String, TableRow>> {
@@ -97,7 +111,7 @@ public class TrafficFlow {
         }
     }
 
-    private static class ExtractId extends SimpleFunction<TableRow, String> {
+    private static class ExtractVehicleId extends SimpleFunction<TableRow, String> {
         @Override
         public String apply(TableRow event) {
             return event.get("vehicleId").toString();
