@@ -71,7 +71,7 @@ public class TrafficFlow {
 
     private static PCollection<TableRow> createWindow(PCollection<TableRow> input) {
         return input
-                .apply("window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(1)))
+                .apply("window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(24)))
                         .triggering(AfterPane.elementCountAtLeast(1))
                         .withAllowedLateness(Duration.ZERO)
                         .accumulatingFiredPanes());

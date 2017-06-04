@@ -27,6 +27,13 @@ function fanout() {
     }
 }
 
+function nextPull() {
+    if (concurrentPulls < PUBSUB_MAXCONCURRENT) {
+        setTimeout(pullJob, 100);
+        concurrentPulls++
+    }
+}
+
 function executePull() {
     const request = pubsub.projects.subscriptions.pull({
         subscription: PUBSUB_SUBSCRIPTION,
@@ -46,6 +53,8 @@ function executePull() {
             // addVehicleMarkers(messages);
             printCounts(messages);
             ackReceivedMessages(ackIds)
+        } else {
+            nextPull();
         }
     });
 }
@@ -83,10 +92,7 @@ function executeAckRequest(ackIds) {
     });
 
     request.execute(function () {
-        if (concurrentPulls < PUBSUB_MAXCONCURRENT) {
-            setTimeout(pullJob, 100);
-            concurrentPulls++
-        }
+        nextPull();
     })
 }
 
