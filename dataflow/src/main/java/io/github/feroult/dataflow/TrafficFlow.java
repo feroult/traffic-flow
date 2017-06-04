@@ -55,10 +55,12 @@ public class TrafficFlow {
         Pipeline p = Pipeline.create(options);
 
         PCollection<TableRow> input = createInput(p, options);
-        PCollection<TableRow> window24hours = createWindow24hours(input);
+        PCollection<TableRow> window24hours = create24hoursWindow(input);
+        PCollection<TableRow> window5minutes = create5minutesWindow(input);
 
-        createVehicleBranch(input, options);
-        createSimulatuionBranch(window24hours, options);
+        createVehicleFeed(input, options);
+        createRoadCounter(window24hours, "24_HOURS", options);
+        createRoadCounter(window5minutes, "5_MINUTES", options);
 
         p.run();
     }
@@ -70,7 +72,7 @@ public class TrafficFlow {
                 .withCoder(TableRowJsonCoder.of()));
     }
 
-    private static PCollection<TableRow> createWindow24hours(PCollection<TableRow> input) {
+    private static PCollection<TableRow> create24hoursWindow(PCollection<TableRow> input) {
         return input
                 .apply("24 hours window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(24)))
                         .triggering(AfterPane.elementCountAtLeast(1))
@@ -78,26 +80,34 @@ public class TrafficFlow {
                         .accumulatingFiredPanes());
     }
 
-    private static void createVehicleBranch(PCollection<TableRow> input, CustomPipelineOptions options) {
+    private static PCollection<TableRow> create5minutesWindow(PCollection<TableRow> input) {
+        return input
+                .apply("5 minutes window", Window.<TableRow>into(FixedWindows.of(Duration.standardMinutes(5)))
+                        .triggering(AfterPane.elementCountAtLeast(1))
+                        .withAllowedLateness(Duration.ZERO)
+                        .accumulatingFiredPanes());
+    }
+
+    private static void createVehicleFeed(PCollection<TableRow> input, CustomPipelineOptions options) {
         input.apply("format vehicles info", MapElements.via(new FormatVehiclesInfo()))
                 .apply(PubsubIO.Write.named("vehicles info to PubSub")
                         .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
                         .withCoder(TableRowJsonCoder.of()));
     }
 
-    private static void createSimulatuionBranch(PCollection<TableRow> window, CustomPipelineOptions options) {
+    private static void createRoadCounter(PCollection<TableRow> window, String type, CustomPipelineOptions options) {
         PCollection<Long> result = window
-                .apply("extract vehicle id", MapElements.via(new ExtractVehicleId()))
-                .apply("remove duplicates", RemoveDuplicates.create())
-                .apply("trigger", Window
+                .apply(String.format("vehicle id (%s)", type), MapElements.via(new ExtractVehicleId()))
+                .apply(String.format("remove duplicates (%s)", type), RemoveDuplicates.create())
+                .apply(String.format("repeat trigger (%s)", type), Window
                         .<String>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
                                 .plusDelayOf(Duration.standardSeconds(2))))
                         .accumulatingFiredPanes())
-                .apply("count distinct vehicles", Count.<String>globally().withoutDefaults());
+                .apply(String.format("count vehicles (%s)", type), Count.<String>globally().withoutDefaults());
 
         result
-                .apply("format road info", MapElements.via(new FormatRoadInfo()))
-                .apply(PubsubIO.Write.named("road info to PubSub")
+                .apply(String.format("format road (%s)", type), MapElements.via(new FormatRoadInfo(type)))
+                .apply(PubsubIO.Write.named(String.format("road to PubSub (%s)", type))
                         .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
                         .withCoder(TableRowJsonCoder.of()));
     }
@@ -119,10 +129,16 @@ public class TrafficFlow {
     }
 
     private static class FormatRoadInfo extends SimpleFunction<Long, TableRow> {
+        private String type;
+
+        public FormatRoadInfo(String type) {
+            this.type = type;
+        }
+
         @Override
         public TableRow apply(Long count) {
             TableRow result = new TableRow();
-            result.set("type", "ROAD");
+            result.set("type", "ROAD_" + type);
             result.set("count", count);
             return result;
         }
