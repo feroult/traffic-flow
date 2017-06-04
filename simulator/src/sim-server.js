@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --max-old-space-size=4096
 
 const dnode = require('dnode');
 const fs = require('fs');
@@ -38,11 +38,11 @@ function emitter(vehicle) {
     };
 
     if (isVerbose()) {
-        console.log('Event ->', event.vehicleId, event.timestamp, event.velocity, [point[0], point[1]]);
+        // console.log('Event ->', event.vehicleId, event.timestamp, event.velocity, [point[0], point[1]]);
     }
 
     publish(argv, event).catch(err => {
-        console.log('Error publishing', err);
+        // console.log('Error publishing', err);
     });
 }
 

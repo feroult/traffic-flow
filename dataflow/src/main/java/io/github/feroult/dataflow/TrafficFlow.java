@@ -55,26 +55,34 @@ public class TrafficFlow {
         Pipeline p = Pipeline.create(options);
 
         PCollection<TableRow> input = createInput(p, options);
-        PCollection<TableRow> window = createWindow(input);
+        PCollection<TableRow> window24hours = createWindow24hours(input);
 
-        createSimulatuionBranch(window, options);
+        createVehicleBranch(input, options);
+        createSimulatuionBranch(window24hours, options);
 
         p.run();
     }
 
     private static PCollection<TableRow> createInput(Pipeline p, CustomPipelineOptions options) {
-        return p.apply(PubsubIO.Read.named("read from PubSub")
+        return p.apply(PubsubIO.Read.named("from PubSub")
                 .topic(String.format("projects/%s/topics/%s", options.getSourceProject(), options.getSourceTopic()))
                 .timestampLabel("ts")
                 .withCoder(TableRowJsonCoder.of()));
     }
 
-    private static PCollection<TableRow> createWindow(PCollection<TableRow> input) {
+    private static PCollection<TableRow> createWindow24hours(PCollection<TableRow> input) {
         return input
-                .apply("window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(24)))
+                .apply("24 hours window", Window.<TableRow>into(FixedWindows.of(Duration.standardHours(24)))
                         .triggering(AfterPane.elementCountAtLeast(1))
                         .withAllowedLateness(Duration.ZERO)
                         .accumulatingFiredPanes());
+    }
+
+    private static void createVehicleBranch(PCollection<TableRow> input, CustomPipelineOptions options) {
+        input.apply("format vehicles info", MapElements.via(new FormatVehiclesInfo()))
+                .apply(PubsubIO.Write.named("vehicles info to PubSub")
+                        .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
+                        .withCoder(TableRowJsonCoder.of()));
     }
 
     private static void createSimulatuionBranch(PCollection<TableRow> window, CustomPipelineOptions options) {
@@ -85,11 +93,11 @@ public class TrafficFlow {
                         .<String>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
                                 .plusDelayOf(Duration.standardSeconds(2))))
                         .accumulatingFiredPanes())
-                .apply("count", Count.<String>globally().withoutDefaults());
+                .apply("count distinct vehicles", Count.<String>globally().withoutDefaults());
 
         result
-                .apply("format", MapElements.via(new FormatCounter()))
-                .apply(PubsubIO.Write.named("write to PubSub")
+                .apply("format road info", MapElements.via(new FormatRoadInfo()))
+                .apply(PubsubIO.Write.named("road info to PubSub")
                         .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
                         .withCoder(TableRowJsonCoder.of()));
     }
@@ -102,10 +110,19 @@ public class TrafficFlow {
         }
     }
 
-    private static class FormatCounter extends SimpleFunction<Long, TableRow> {
+    private static class FormatVehiclesInfo extends SimpleFunction<TableRow, TableRow> {
+        @Override
+        public TableRow apply(TableRow event) {
+            event.set("type", "VEHICLE");
+            return event;
+        }
+    }
+
+    private static class FormatRoadInfo extends SimpleFunction<Long, TableRow> {
         @Override
         public TableRow apply(Long count) {
             TableRow result = new TableRow();
+            result.set("type", "ROAD");
             result.set("count", count);
             return result;
         }

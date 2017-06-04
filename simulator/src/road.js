@@ -29,7 +29,7 @@ class Road {
 
     moveVehicleTo(vehicle, elapsedHours) {
         vehicle.distance = this._computeVehicleNewDistance(vehicle, elapsedHours);
-        console.log('moveTo', `stretch=${vehicle.stretchIndex}`, `velocity=${vehicle.velocity}`, `id=${vehicle.id}`);
+        // console.log('moveTo', `stretch=${vehicle.stretchIndex}`, `velocity=${vehicle.velocity}`, `id=${vehicle.id}`);
     }
 
     _computeVehicleNewDistance(vehicle, elapsedHours) {
@@ -86,7 +86,7 @@ class Road {
             this._updateStretchIndex(vehicle, index);
             vehicle.velocity = velocity;
         } else {
-            if(vehicle.distance === 0) {
+            if (vehicle.distance === 0) {
                 console.log('xxx', vehicle.id);
             }
         }
@@ -111,7 +111,7 @@ class Road {
             stretch.enterVehicle(vehicle);
 
             // if (stretch.trafficLoad() > 0.20) {
-                console.log('COUNT', `index=${newIndex}`, `count=${stretch.vehicleCount}`, `load=${stretch.trafficLoad()}`, `full=${stretch.isFull()}`);
+            //     console.log('COUNT', `index=${newIndex}`, `count=${stretch.vehicleCount}`, `load=${stretch.trafficLoad()}`, `full=${stretch.isFull()}`);
             // }
 
             vehicle.stretchIndex = newIndex;

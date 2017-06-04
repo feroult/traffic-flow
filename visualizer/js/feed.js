@@ -51,15 +51,20 @@ function executePull() {
             const messages = parseMessages(response);
             const ackIds = parseAckIds(response);
             // addVehicleMarkers(messages);
-            printCounts(messages);
+            printCounts(filter(messages, "ROAD"));
             ackReceivedMessages(ackIds)
         } else {
             nextPull();
         }
     });
 }
+
 function hasMessages(resp) {
     return 'receivedMessages' in resp && resp.receivedMessages.length > 0;
+}
+
+function filter(messages, type) {
+    return messages.filter(m => m.type === type);
 }
 
 function parseMessages(resp) {

@@ -11,7 +11,7 @@ function publish(argv, data) {
         .then((results) => {
             const messageIds = results[0];
             if (isVerbose()) {
-                console.log(`Message ${messageIds[0]} published.`);
+                // console.log(`Message ${messageIds[0]} published.`);
             }
             return messageIds;
         });
