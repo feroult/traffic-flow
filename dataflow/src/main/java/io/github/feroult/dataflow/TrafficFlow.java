@@ -61,6 +61,7 @@ public class TrafficFlow {
         createVehicleFeed(input, options);
         createRoadCounter(window24hours, "24_HOURS", options);
         createRoadCounter(window5minutes, "5_MINUTES", options);
+        createStretchFeed(window5minutes, options);
 
         p.run();
     }
@@ -112,6 +113,10 @@ public class TrafficFlow {
                         .withCoder(TableRowJsonCoder.of()));
     }
 
+    private static void createStretchFeed(PCollection<TableRow> window, CustomPipelineOptions options) {
+        window.apply("mark stretches", MapElements.via(new MarkStretches()));
+    }
+
     private static class MarkEvents extends SimpleFunction<TableRow, KV<String, TableRow>> {
         @Override
         public KV<String, TableRow> apply(TableRow row) {
@@ -148,6 +153,20 @@ public class TrafficFlow {
         @Override
         public String apply(TableRow event) {
             return event.get("vehicleId").toString();
+        }
+    }
+
+    private static class MarkStretches extends SimpleFunction<TableRow, KV<Stretch, TableRow>> {
+        @Override
+        public KV<Stretch, TableRow> apply(TableRow row) {
+            Object location = row.get("location");
+            float lat = Float.parseFloat(row.get("latitude").toString());
+            float lon = Float.parseFloat(row.get("longitude").toString());
+            final float PRECISION = 0.005f; // very approximately 500m
+            float roundedLat = (float) Math.floor(lat / PRECISION) * PRECISION + PRECISION / 2;
+            float roundedLon = (float) Math.floor(lon / PRECISION) * PRECISION + PRECISION / 2;
+            Stretch key = new Stretch(roundedLat, roundedLon);
+            return KV.of(key, row);
         }
     }
 }
