@@ -6,6 +6,7 @@ public class Segment {
     private double lng;
 
     private double accSum;
+    private Segment nextSegment;
 
     public Segment(double lat, double lng, double accSum) {
         this.accSum = accSum;
@@ -23,5 +24,17 @@ public class Segment {
 
     public double getLng() {
         return lng;
+    }
+
+    public void setNextSegment(Segment nextSegment) {
+        this.nextSegment = nextSegment;
+    }
+
+    public Segment getNextSegment() {
+        return nextSegment;
+    }
+
+    public boolean containsPoint(double lat, double lng) {
+        return false;
     }
 }

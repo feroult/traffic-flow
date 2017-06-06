@@ -17,18 +17,20 @@ public class Road {
     private List<Segment> segments;
 
     public Road(String filename) {
-        this.segments = loadPoints(filename);
+        this.segments = loadSegments(filename);
     }
 
     public List<Segment> getSegments() {
         return segments;
     }
 
-    private List<Segment> loadPoints(String filename) {
+    private List<Segment> loadSegments(String filename) {
         List<Segment> result = new ArrayList<>();
 
         JsonElement jsonElement = new JsonParser().parse(readJson(filename));
         JsonArray segments = jsonElement.getAsJsonObject().get("points").getAsJsonArray();
+
+        Segment previousSegment = null;
 
         for (JsonElement el : segments) {
             JsonObject object = el.getAsJsonObject();
@@ -39,6 +41,10 @@ public class Road {
             );
 
             result.add(segment);
+            if (previousSegment != null) {
+                previousSegment.setNextSegment(segment);
+            }
+            previousSegment = segment;
         }
 
         return result;
@@ -52,4 +58,16 @@ public class Road {
         }
     }
 
+    public int getClusterFor(double lat, double lng, int totalClusters) {
+        double accSum = 0;
+
+        for (Segment segment : segments) {
+
+            if (!segment.containsPoint(lat, lng)) {
+                accSum += segment.getAccSum();
+            }
+        }
+
+        return totalClusters;
+    }
 }
