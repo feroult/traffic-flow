@@ -16,8 +16,11 @@ public class Road {
 
     private List<Segment> segments;
 
+    private final double roadLength;
+
     public Road(String filename) {
         this.segments = loadSegments(filename);
+        this.roadLength = this.segments.get(this.segments.size() - 1).getAccSum();
     }
 
     public List<Segment> getSegments() {
@@ -62,12 +65,22 @@ public class Road {
         double accSum = 0;
 
         for (Segment segment : segments) {
-
             if (!segment.containsPoint(lat, lng)) {
-                accSum += segment.getAccSum();
+                accSum = segment.getAccSum();
+            } else {
+                accSum = segment.getAccSum() + segment.distanceFromStart(lat, lng);
+                break;
             }
         }
 
-        return totalClusters;
+        if (accSum == this.roadLength) {
+            Segment last = this.segments.get(this.segments.size() - 1);
+            if (last.distanceFromStart(lat, lng) > 0.00005) {
+                return -1;
+            }
+        }
+
+        int cluster = (int) Math.ceil(accSum / (this.roadLength / totalClusters));
+        return cluster == 0 ? 1 : cluster;
     }
 }
