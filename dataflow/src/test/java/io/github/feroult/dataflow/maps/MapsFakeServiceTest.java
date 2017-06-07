@@ -35,10 +35,17 @@ public class MapsFakeServiceTest {
     public void testStretches() {
         Road road = new Road("/data/bandeirantes.json", 100);
         assertEquals(100, road.getStretches().size());
+
         assertEquals(-22.99792, road.getStretches().get(0).getFromLat(), 0);
         assertEquals(-47.10328, road.getStretches().get(0).getFromLng(), 0);
         assertEquals(-23.00332207196766, road.getStretches().get(0).getToLat(), 0);
         assertEquals(-47.09862728689276, road.getStretches().get(0).getToLng(), 0);
+
+        assertEquals(-23.04395398077555, road.getStretches().get(9).getFromLat(), 0);
+        assertEquals(-47.06040581076131, road.getStretches().get(9).getFromLng(), 0);
+        assertEquals(-23.048448961107116, road.getStretches().get(9).getToLat(), 0);
+        assertEquals(-47.05486813052743, road.getStretches().get(9).getToLng(), 0);
+
     }
 
 }

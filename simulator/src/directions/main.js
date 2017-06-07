@@ -15,6 +15,7 @@ dir.saveDataToFile('data.json', data => {
     // console.log('inicio sampa', dir.interpolate(data, 0.935 * max));
 
     console.log('1', dir.interpolate(data, 0.01 * max));
+    console.log('9', dir.interpolate(data, 0.09 * max));
     console.log('10', dir.interpolate(data, 0.10 * max));
     console.log('50', dir.interpolate(data, 0.50 * max));
     console.log('10', dir.interpolate(data, 1 * max));

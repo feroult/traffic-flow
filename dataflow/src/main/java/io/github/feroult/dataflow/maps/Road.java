@@ -102,6 +102,7 @@ public class Road {
             if (segment.getNextSegment().getAccSum() >= currentStretch * stretchLength) {
                 LatLng to = segment.interpolate(currentStretch * stretchLength);
                 result.add(new Stretch(currentStretch++, from, to));
+                from = to;
 
                 if (currentStretch > totalStretches) {
                     break;
