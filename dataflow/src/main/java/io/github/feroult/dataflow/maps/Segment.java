@@ -73,9 +73,9 @@ public class Segment {
         return latLng;
     }
 
-    public LatLng interpolate(double distanceInSegment) {
+    public LatLng interpolate(double distance) {
         double totalDist = dist(this.getLng(), this.getLat(), nextSegment.getLng(), nextSegment.getLat());
-        double factor = distanceInSegment / totalDist;
+        double factor = (distance - this.getAccSum()) / totalDist;
         double lng = this.getLng() + factor * (nextSegment.getLng() - this.getLng());
         double lat = this.getLat() + factor * (nextSegment.getLat() - this.getLat());
         return new LatLng(lat, lng);

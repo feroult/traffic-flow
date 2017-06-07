@@ -99,10 +99,8 @@ public class Road {
 
         for (Segment segment : segments) {
 
-            double distanceInSegment = segment.getNextSegment().getAccSum() - currentStretch * stretchLength;
-
-            if (distanceInSegment >= 0) {
-                LatLng to = segment.interpolate(distanceInSegment);
+            if (segment.getNextSegment().getAccSum() >= currentStretch * stretchLength) {
+                LatLng to = segment.interpolate(currentStretch * stretchLength);
                 result.add(new Stretch(currentStretch++, from, to));
 
                 if (currentStretch > totalStretches) {
