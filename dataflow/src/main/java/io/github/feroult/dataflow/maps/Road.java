@@ -14,13 +14,18 @@ import java.util.List;
 
 public class Road {
 
+    private int totalStretches;
+
     private List<Segment> segments;
 
     private final double roadLength;
+    private List<Stretch> stretches;
 
-    public Road(String filename) {
+    public Road(String filename, int totalStretches) {
+        this.totalStretches = totalStretches;
         this.segments = loadSegments(filename);
         this.roadLength = this.segments.get(this.segments.size() - 1).getAccSum();
+//        this.stretches = createStretches();
     }
 
     public List<Segment> getSegments() {
@@ -61,7 +66,7 @@ public class Road {
         }
     }
 
-    public int getClusterFor(double lat, double lng, int totalClusters) {
+    public int getClusterFor(double lat, double lng) {
         double accSum = 0;
 
         for (Segment segment : segments) {
@@ -80,7 +85,30 @@ public class Road {
             }
         }
 
-        int cluster = (int) Math.ceil(accSum / (this.roadLength / totalClusters));
+        int cluster = (int) Math.ceil(accSum / (this.roadLength / totalStretches));
         return cluster == 0 ? 1 : cluster;
+    }
+
+    private List<Stretch> createStretches() {
+        List<Stretch> result = new ArrayList<>();
+
+        double stretchLength = roadLength / totalStretches;
+        double accSum = 0;
+        int segmentIndex = 0;
+
+        for (int i = 0; i < totalStretches; i++) {
+            double fromLat = segments.get(segmentIndex).getLat();
+            double fromLng = segments.get(segmentIndex).getLng();
+
+            while (accSum < (i + 1) * stretchLength) {
+                accSum += segments.get(segmentIndex).getAccSum();
+            }
+        }
+
+        return null;
+    }
+
+    public List<Stretch> getStretches() {
+        return stretches;
     }
 }

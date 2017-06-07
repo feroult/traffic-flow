@@ -28,6 +28,7 @@ import com.google.cloud.dataflow.sdk.transforms.SimpleFunction;
 import com.google.cloud.dataflow.sdk.transforms.windowing.*;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
+import io.github.feroult.dataflow.maps.Stretch;
 import io.github.feroult.dataflow.utils.CustomPipelineOptions;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -159,14 +160,7 @@ public class TrafficFlow {
     private static class MarkStretches extends SimpleFunction<TableRow, KV<Stretch, TableRow>> {
         @Override
         public KV<Stretch, TableRow> apply(TableRow row) {
-            Object location = row.get("location");
-            float lat = Float.parseFloat(row.get("latitude").toString());
-            float lon = Float.parseFloat(row.get("longitude").toString());
-            final float PRECISION = 0.005f; // very approximately 500m
-            float roundedLat = (float) Math.floor(lat / PRECISION) * PRECISION + PRECISION / 2;
-            float roundedLon = (float) Math.floor(lon / PRECISION) * PRECISION + PRECISION / 2;
-            Stretch key = new Stretch(roundedLat, roundedLon);
-            return KV.of(key, row);
+            return null;
         }
     }
 }

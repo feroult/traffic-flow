@@ -2,16 +2,14 @@ package io.github.feroult.dataflow.maps;
 
 public class Segment {
 
-    private double lat;
-    private double lng;
+    private LatLng latLng;
 
     private double accSum;
     private Segment nextSegment;
 
     public Segment(double lat, double lng, double accSum) {
         this.accSum = accSum;
-        this.lat = lat;
-        this.lng = lng;
+        this.latLng = new LatLng(lat, lng);
     }
 
     public double getAccSum() {
@@ -19,11 +17,11 @@ public class Segment {
     }
 
     public double getLat() {
-        return lat;
+        return latLng.getLat();
     }
 
     public double getLng() {
-        return lng;
+        return latLng.getLng();
     }
 
     public void setNextSegment(Segment nextSegment) {
@@ -40,10 +38,10 @@ public class Segment {
         }
         double x0 = lng;
         double y0 = lat;
-        double x1 = this.lng;
-        double y1 = this.lat;
-        double x2 = this.nextSegment.lng;
-        double y2 = this.nextSegment.lat;
+        double x1 = getLng();
+        double y1 = getLat();
+        double x2 = this.nextSegment.getLng();
+        double y2 = this.nextSegment.getLat();
         return computeDistance(x1, y1, x2, y2, x0, y0) < 0.00005; // 5 meters error
     }
 
@@ -64,6 +62,6 @@ public class Segment {
     }
 
     public double distanceFromStart(double lat, double lng) {
-        return Math.sqrt(dist2(this.lng, this.lat, lng, lat));
+        return Math.sqrt(dist2(this.getLng(), this.getLat(), lng, lat));
     }
 }
