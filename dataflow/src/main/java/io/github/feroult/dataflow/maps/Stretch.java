@@ -30,4 +30,7 @@ public class Stretch {
         return to.getLng();
     }
 
+    public int getIndex() {
+        return index;
+    }
 }

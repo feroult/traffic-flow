@@ -3,6 +3,7 @@ package io.github.feroult.dataflow.maps;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MapsFakeServiceTest {
 
@@ -17,18 +18,6 @@ public class MapsFakeServiceTest {
 
         Segment thirdSegment = secondSegment.getNextSegment();
         assertEquals(0.005034522321701405, thirdSegment.getAccSum(), 0.0000000000000000000001);
-    }
-
-    @Test
-    public void testPointCluster() {
-        Road road = new Road("/data/bandeirantes.json", 100);
-
-        assertEquals(1, road.getClusterFor(-22.99792, -47.10328));
-        assertEquals(3, road.getClusterFor(-23.01046, -47.0908));
-        assertEquals(100, road.getClusterFor(-23.51321, -46.68018));
-
-        assertEquals(-1, road.getClusterFor(-23.513407, -46.679968));
-        assertEquals(-1, road.getClusterFor(-23.488927, -46.687221));
     }
 
     @Test
@@ -50,6 +39,18 @@ public class MapsFakeServiceTest {
         assertEquals(-46.68649644278096, road.getStretches().get(99).getFromLng(), 0);
         assertEquals(-23.51321, road.getStretches().get(99).getToLat(), 0);
         assertEquals(-46.68018, road.getStretches().get(99).getToLng(), 0);
+    }
+
+    @Test
+    public void testPointStretch() {
+        Road road = new Road("/data/bandeirantes.json", 100);
+
+        assertEquals(1, road.getStretchFor(-22.99792, -47.10328).getIndex());
+        assertEquals(3, road.getStretchFor(-23.01046, -47.0908).getIndex());
+        assertEquals(100, road.getStretchFor(-23.51321, -46.68018).getIndex());
+
+        assertNull(road.getStretchFor(-23.513407, -46.679968));
+        assertNull(road.getStretchFor(-23.488927, -46.687221));
     }
 
 }
