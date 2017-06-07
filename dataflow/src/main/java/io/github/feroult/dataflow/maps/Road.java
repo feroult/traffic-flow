@@ -25,7 +25,7 @@ public class Road {
         this.totalStretches = totalStretches;
         this.segments = loadSegments(filename);
         this.roadLength = this.segments.get(this.segments.size() - 1).getAccSum();
-//        this.stretches = createStretches();
+        this.stretches = createStretches();
     }
 
     public List<Segment> getSegments() {
@@ -93,19 +93,25 @@ public class Road {
         List<Stretch> result = new ArrayList<>();
 
         double stretchLength = roadLength / totalStretches;
-        double accSum = 0;
-        int segmentIndex = 0;
 
-        for (int i = 0; i < totalStretches; i++) {
-            double fromLat = segments.get(segmentIndex).getLat();
-            double fromLng = segments.get(segmentIndex).getLng();
+        int currentStretch = 1;
+        LatLng from = segments.get(0).getLatLng();
 
-            while (accSum < (i + 1) * stretchLength) {
-                accSum += segments.get(segmentIndex).getAccSum();
+        for (Segment segment : segments) {
+
+            double distanceInSegment = segment.getNextSegment().getAccSum() - currentStretch * stretchLength;
+
+            if (distanceInSegment >= 0) {
+                LatLng to = segment.interpolate(distanceInSegment);
+                result.add(new Stretch(currentStretch++, from, to));
+
+                if (currentStretch > totalStretches) {
+                    break;
+                }
             }
         }
 
-        return null;
+        return result;
     }
 
     public List<Stretch> getStretches() {

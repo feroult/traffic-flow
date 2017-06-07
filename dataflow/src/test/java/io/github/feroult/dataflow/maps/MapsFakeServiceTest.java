@@ -1,6 +1,5 @@
 package io.github.feroult.dataflow.maps;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,11 +32,11 @@ public class MapsFakeServiceTest {
     }
 
     @Test
-    @Ignore
     public void testStretches() {
         Road road = new Road("/data/bandeirantes.json", 100);
-
         assertEquals(100, road.getStretches().size());
+        assertEquals(-22.99792, road.getStretches().get(0).getFromLat(), 0);
+        assertEquals(-23.00332207196766, road.getStretches().get(0).getToLat(), 0);
     }
 
 }

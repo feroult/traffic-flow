@@ -17,7 +17,9 @@ const extractData = cb => {
         destination: '-23.513111, -46.680075',
         mode: 'driving'
     }, (err, response) => {
+
         if (!err) {
+            console.log('r', response)
             const points = response.json.routes[0].overview_polyline.points;
 
             console.log('points', points);

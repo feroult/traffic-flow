@@ -57,11 +57,27 @@ public class Segment {
         return sqr(x1 - x2) + sqr(y1 - y2);
     }
 
+    private static double dist(double x1, double y1, double x2, double y2) {
+        return Math.sqrt(dist2(x1, y1, x2, y2));
+    }
+
     private static double sqr(double x) {
         return x * x;
     }
 
     public double distanceFromStart(double lat, double lng) {
-        return Math.sqrt(dist2(this.getLng(), this.getLat(), lng, lat));
+        return dist(this.getLng(), this.getLat(), lng, lat);
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public LatLng interpolate(double distanceInSegment) {
+        double totalDist = dist(this.getLng(), this.getLat(), nextSegment.getLng(), nextSegment.getLat());
+        double factor = distanceInSegment / totalDist;
+        double lng = this.getLng() + factor * (nextSegment.getLng() - this.getLng());
+        double lat = this.getLat() + factor * (nextSegment.getLat() - this.getLat());
+        return new LatLng(lat, lng);
     }
 }
