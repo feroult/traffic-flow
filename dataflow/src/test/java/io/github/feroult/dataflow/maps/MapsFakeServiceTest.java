@@ -46,6 +46,10 @@ public class MapsFakeServiceTest {
         assertEquals(-23.048448961107116, road.getStretches().get(9).getToLat(), 0);
         assertEquals(-47.05486813052743, road.getStretches().get(9).getToLng(), 0);
 
+        assertEquals(-23.51018836255811, road.getStretches().get(99).getFromLat(), 0);
+        assertEquals(-46.68649644278096, road.getStretches().get(99).getFromLng(), 0);
+        assertEquals(-23.51321, road.getStretches().get(99).getToLat(), 0);
+        assertEquals(-46.68018, road.getStretches().get(99).getToLng(), 0);
     }
 
 }

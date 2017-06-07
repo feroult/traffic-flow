@@ -18,6 +18,7 @@ dir.saveDataToFile('data.json', data => {
     console.log('9', dir.interpolate(data, 0.09 * max));
     console.log('10', dir.interpolate(data, 0.10 * max));
     console.log('50', dir.interpolate(data, 0.50 * max));
-    console.log('10', dir.interpolate(data, 1 * max));
+    console.log('99', dir.interpolate(data, 0.99 * max));
+    console.log('100', dir.interpolate(data, 1 * max));
 
 });
