@@ -28,6 +28,7 @@ import com.google.cloud.dataflow.sdk.transforms.SimpleFunction;
 import com.google.cloud.dataflow.sdk.transforms.windowing.*;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
+import io.github.feroult.dataflow.maps.FakeMapService;
 import io.github.feroult.dataflow.maps.Stretch;
 import io.github.feroult.dataflow.utils.CustomPipelineOptions;
 import org.joda.time.Duration;
@@ -115,7 +116,19 @@ public class TrafficFlow {
     }
 
     private static void createStretchFeed(PCollection<TableRow> window, CustomPipelineOptions options) {
-        window.apply("mark stretches", MapElements.via(new MarkStretches()));
+        PCollection<KV<Stretch, Long>> result = window
+                .apply("mark stretches", MapElements.via(new MarkStretches()))
+                .apply(String.format("repeat trigger"), Window
+                        .<KV<Stretch, TableRow>>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
+                                .plusDelayOf(Duration.standardSeconds(2))))
+                        .accumulatingFiredPanes())
+                .apply("count events", Count.perKey());
+
+        result
+                .apply("format stretch", MapElements.via(new FormatStretchInfo()))
+                .apply(PubsubIO.Write.named(String.format("stretch to PubSub"))
+                        .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
+                        .withCoder(TableRowJsonCoder.of()));
     }
 
     private static class MarkEvents extends SimpleFunction<TableRow, KV<String, TableRow>> {
@@ -160,7 +173,28 @@ public class TrafficFlow {
     private static class MarkStretches extends SimpleFunction<TableRow, KV<Stretch, TableRow>> {
         @Override
         public KV<Stretch, TableRow> apply(TableRow row) {
-            return null;
+            double lat = Double.parseDouble(row.get("lat").toString());
+            double lng = Double.parseDouble(row.get("lng").toString());
+            Stretch stretch = FakeMapService.getStretchFor(lat, lng);
+            return KV.of(stretch, row);
+        }
+    }
+
+    private static class FormatStretchInfo extends SimpleFunction<KV<Stretch, Long>, TableRow> {
+        @Override
+        public TableRow apply(KV<Stretch, Long> stretchInfo) {
+            Stretch stretch = stretchInfo.getKey();
+            Long count = stretchInfo.getValue();
+
+            TableRow result = new TableRow();
+            result.set("type", "STRETCH");
+            result.set("index", stretch.getIndex());
+            result.set("fromLat", stretch.getFromLat());
+            result.set("fromLng", stretch.getFromLng());
+            result.set("toLat", stretch.getToLat());
+            result.set("toLng", stretch.getToLng());
+            result.set("count", count);
+            return result;
         }
     }
 }

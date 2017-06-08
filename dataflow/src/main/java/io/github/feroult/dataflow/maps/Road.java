@@ -4,15 +4,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Road {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Road.class);
 
     private int totalStretches;
 
@@ -39,10 +42,8 @@ public class Road {
 
     private List<Segment> loadSegments(String filename) {
         List<Segment> result = new ArrayList<>();
-
         JsonElement jsonElement = new JsonParser().parse(readJson(filename));
         JsonArray segments = jsonElement.getAsJsonObject().get("points").getAsJsonArray();
-
         Segment previousSegment = null;
 
         for (JsonElement el : segments) {
@@ -64,11 +65,9 @@ public class Road {
     }
 
     private String readJson(String filename) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(Road.class.getResource(filename).toURI())));
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        BufferedReader buffer = new BufferedReader(new InputStreamReader(Road.class.getResourceAsStream(filename)));
+        String json = buffer.lines().collect(Collectors.joining("\n"));
+        return json;
     }
 
     public Stretch getStretchFor(double lat, double lng) {

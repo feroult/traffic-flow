@@ -31,10 +31,8 @@ function emitter(vehicle) {
         vehicleId: vehicle.id,
         timestamp: new Date().getTime(),
         velocity: vehicle.velocity,
-        location: {
-            lat: point[0],
-            lng: point[1]
-        }
+        lat: point[0],
+        lng: point[1]
     };
 
     if (isVerbose()) {

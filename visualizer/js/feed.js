@@ -51,8 +51,9 @@ function executePull() {
             const messages = parseMessages(response);
             const ackIds = parseAckIds(response);
             // addVehicleMarkers(messages);
-            printCounts(filter(messages, "ROAD_24_HOURS"), "day");
-            printCounts(filter(messages, "ROAD_5_MINUTES"), "instant");
+            // printMessages(filter(messages, "ROAD_24_HOURS"), "day");
+            // printMessages(filter(messages, "ROAD_5_MINUTES"), "instant");
+            printMessages(filter(messages, "STRETCH"), "stretch");
             ackReceivedMessages(ackIds)
         } else {
             nextPull();
@@ -113,9 +114,9 @@ function countDuplicates(ackIds) {
     });
 }
 
-var printCounts = function (messages, label) {
+var printMessages = function (messages, label) {
     for (let i = 0; i < messages.length; i++) {
-        console.log('label=', label, 'count=', messages[i].count);
+        console.log(label, 'message', messages[i]);
     }
 
 };
