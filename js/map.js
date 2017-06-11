@@ -1,5 +1,6 @@
 const CAR = 'M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z';
 let count = 0;
+
 function addVehicleMarkers(events) {
 
     const now = new Date();
@@ -78,4 +79,72 @@ function getRandomColor() {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+
+// stretches
+
+function addStretches(events) {
+    for (let i = 0, l = events.length; i < l; i++) {
+        const event = events[i];
+        const key = event.index + '';
+
+        const stretch = stretches[key];
+        console.log('refreshing', key);
+
+        if (!stretch) {
+            const path = JSON.parse(event.path).map(function (latLng) {
+                return new google.maps.LatLng(latLng.lat, latLng.lng);
+            });
+
+            const polyline = new google.maps.Polyline({
+                path: path,
+                strokeColor: getStretchColor(event),
+                strokeOpacity: 1.0,
+                strokeWeight: getStrokeWeight()
+            });
+
+            polyline.setMap(map);
+
+            stretches[key] = {
+                polyline: polyline
+            };
+
+            google.maps.event.addListener(map, 'zoom_changed', function () {
+                console.log('zoom', map.getZoom());
+                polyline.setOptions({strokeWeight: getStrokeWeight()});
+            });
+        } else {
+            stretch.polyline.setOptions({
+                strokeColor: getStretchColor(event)
+            });
+        }
+    }
+}
+
+function getStretchColor(event) {
+    if (event.avgSpeed < 50) {
+        return "#FF0000";
+    } else {
+        return "#666";
+    }
+}
+
+function getStrokeWeight() {
+    const zoom = map.getZoom();
+    if (zoom < 11) {
+        return 2;
+    }
+    if (zoom === 11) {
+        return 3;
+    }
+    if (zoom > 11 && zoom <= 13) {
+        return 5;
+    }
+    if (zoom > 13 && zoom < 17) {
+        return 6;
+    }
+    if (zoom === 17) {
+        return 11;
+    }
+    return 14;
 }

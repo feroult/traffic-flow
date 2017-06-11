@@ -1,5 +1,6 @@
 let authPromise;
 let map;
+let directions;
 let pubsub;
 
 let keepPulling = false;
@@ -10,6 +11,7 @@ let duplicates;
 
 let vehicles;
 let elements;
+let stretches;
 
 function resetGlobals() {
     concurrentPulls = 0;
@@ -17,6 +19,7 @@ function resetGlobals() {
     duplicates = 0;
     vehicles = {};
     elements = [];
+    stretches = {};
 }
 
 resetGlobals();

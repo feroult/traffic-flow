@@ -54,6 +54,7 @@ function executePull() {
             // printMessages(filter(messages, "ROAD_24_HOURS"), "day");
             // printMessages(filter(messages, "ROAD_5_MINUTES"), "instant");
             printMessages(filter(messages, "STRETCH"), "stretch");
+            addStretches(filter(messages, "STRETCH"));
             ackReceivedMessages(ackIds)
         } else {
             nextPull();
