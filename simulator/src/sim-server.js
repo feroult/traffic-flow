@@ -18,7 +18,15 @@ bandeirantes.fastForward = getFastForward;
 
 const road = new Road(bandeirantes);
 
-let intervalId = setInterval(spawn, argv.interval / getFastForward());
+let intervalId = setInterval(addVehicles, argv.interval / getFastForward());
+
+
+function moveVehicles() {
+    road.moveVehicles();
+    setTimeout(moveVehicles, argv.sleep / getFastForward())
+}
+
+moveVehicles();
 
 function emitter(vehicle) {
 
@@ -50,7 +58,7 @@ function randomTargetVelocity() {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function spawn() {
+function addVehicles() {
     for (let i = 0; i < argv.vehicles; i++) {
         const vehicle = new Vehicle({
             targetVelocity: randomTargetVelocity(),
@@ -72,7 +80,7 @@ function remoteControlServerSetup() {
 
     const updateInterval = function () {
         clearInterval(intervalId);
-        intervalId = setInterval(spawn, argv.interval / getFastForward());
+        intervalId = setInterval(addVehicles, argv.interval / getFastForward());
     };
 
     const updateParams = function (newArgv) {

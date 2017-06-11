@@ -12,13 +12,12 @@ class Vehicle {
         this.time = 0;
         this.distance = 0;
         this.stretchIndex = undefined;
-
         this.scheduleNextMove();
     }
 
     scheduleNextMove() {
         this.timestamp = new Date().getTime();
-        this.timeoutId = setTimeout(() => this.move(), this._sleepInterval());
+        // this.timeoutId = setTimeout(() => this.move(), this._sleepInterval());
     }
 
     resetSleepTimeout() {
@@ -41,7 +40,7 @@ class Vehicle {
 
     move() {
         process.stdout.write('.');
-        
+
         const elapsedHours = ((new Date().getTime() - this.timestamp)) * this._fastForward() / 1000 / 60 / 60;
 
         this.time += elapsedHours;

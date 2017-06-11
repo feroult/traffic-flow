@@ -27,7 +27,7 @@ function log() {
     count++;
     if (count % LOG_COUNT_BATCH === 0) {
         const elapsed = Math.floor((new Date().getTime() - start) / 1000);
-        console.log(`${LOG_COUNT_BATCH} events, ${elapsed}/s.`);
+        console.log(`${count} events, ${elapsed}/s.`);
     }
 }
 

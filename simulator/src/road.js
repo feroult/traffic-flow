@@ -27,6 +27,15 @@ class Road {
         return Math.floor(distance / this.stretchesLength);
     }
 
+    moveVehicles() {
+        for (let vehicleId in this.vehicles) {
+            if (this.vehicles.hasOwnProperty(vehicleId)) {
+                const vehicle = this.vehicles[vehicleId];
+                vehicle.move();
+            }
+        }
+    }
+
     moveVehicleTo(vehicle, elapsedHours) {
         vehicle.distance = this._computeVehicleNewDistance(vehicle, elapsedHours);
         // console.log('moveTo', `stretch=${vehicle.stretchIndex}`, `velocity=${vehicle.velocity}`, `id=${vehicle.id}`);
