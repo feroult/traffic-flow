@@ -83,49 +83,88 @@ function getRandomColor() {
 
 // stretches
 
+
 function addStretches(events) {
     for (let i = 0, l = events.length; i < l; i++) {
-        const event = events[i];
-        const key = event.index + '';
-
-        const stretch = stretches[key];
-        console.log('refreshing', key);
-
-        if (!stretch) {
-            const path = JSON.parse(event.path).map(function (latLng) {
-                return new google.maps.LatLng(latLng.lat, latLng.lng);
-            });
-
-            const polyline = new google.maps.Polyline({
-                path: path,
-                strokeColor: getStretchColor(event),
-                strokeOpacity: 1.0,
-                strokeWeight: getStrokeWeight()
-            });
-
-            polyline.setMap(map);
-
-            stretches[key] = {
-                polyline: polyline
-            };
-
-            google.maps.event.addListener(map, 'zoom_changed', function () {
-                console.log('zoom', map.getZoom());
-                polyline.setOptions({strokeWeight: getStrokeWeight()});
-            });
-        } else {
-            stretch.polyline.setOptions({
-                strokeColor: getStretchColor(event)
-            });
-        }
+        addStretch(events[i]);
     }
 }
 
-function getStretchColor(event) {
-    if (event.avgSpeed < 50) {
-        return "#FF0000";
+function addStretch(event) {
+    let infoWindow;
+    if (!infoWindow) {
+        infoWindow = new google.maps.InfoWindow({
+            content: '<h1>hello</h1>'
+        });
+    }
+
+    const key = event.index + '';
+
+    const stretch = stretches[key];
+    console.log('refreshing', key);
+
+    if (!stretch) {
+        const path = JSON.parse(event.path).map(function (latLng) {
+            return new google.maps.LatLng(latLng.lat, latLng.lng);
+        });
+
+        const options = getStretchPolylineOptions(event);
+        options.path = path;
+
+        const polyline = new google.maps.Polyline(options);
+
+        polyline.setMap(map);
+
+        stretches[key] = {
+            polyline: polyline
+        };
+
+        google.maps.event.addListener(map, 'zoom_changed', function () {
+            console.log('zoom', map.getZoom());
+            polyline.setOptions({strokeWeight: getStrokeWeight()});
+        });
+
+        polyline.addListener('click', function () {
+            infoWindow.close();
+            infoWindow.setPosition(path[0]);
+            infoWindow.open(map, polyline);
+        });
+
+        polyline.addListener('mouseover', function () {
+            polyline.setOptions({strokeColor: getStretchColor(event, true)});
+        });
+
+        polyline.addListener('mouseout', function () {
+            polyline.setOptions({strokeColor: getStretchColor(event, false)});
+        });
+
     } else {
-        return "#666";
+        stretch.polyline.setOptions(getStretchPolylineOptions(event));
+    }
+}
+
+
+function getStretchPolylineOptions(event) {
+    return {
+        strokeColor: getStretchColor(event),
+        strokeOpacity: getStrokeOpacity(event),
+        strokeWeight: getStrokeWeight()
+    };
+};
+
+function getStretchColor(event, highlight) {
+    if (event.avgSpeed < 50) {
+        return highlight ? "#FF0000" : "#AA0000";
+    } else {
+        return highlight ? "#AAAAAA" : "#666666";
+    }
+}
+
+function getStrokeOpacity(event) {
+    if (event.avgSpeed < 50) {
+        return 1;
+    } else {
+        return 1;
     }
 }
 
