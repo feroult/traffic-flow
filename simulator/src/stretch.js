@@ -37,9 +37,6 @@ class Stretch {
 
         if (this.trafficLoad() > TRAFFIC_SLOWDOWN_THRESHOLD) {
             const slowDownFactor = (this.trafficLoad() - TRAFFIC_SLOWDOWN_THRESHOLD ) / ( 1 - TRAFFIC_SLOWDOWN_THRESHOLD);
-
-            console.log('Traffic', slowDownFactor, index);
-
             velocity = velocity * (1 - slowDownFactor);
             return velocity > MINIMUN_VELOCITY_THRESHOLD ? velocity : MINIMUN_VELOCITY_THRESHOLD;
         }

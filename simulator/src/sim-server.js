@@ -1,4 +1,4 @@
-#!/usr/bin/env node --max-old-space-size=4096
+#!/usr/bin/env node --max-old-space-size=7000
 
 const dnode = require('dnode');
 const fs = require('fs');
@@ -30,7 +30,7 @@ function emitter(vehicle) {
         simulationId: road.simulationId,
         vehicleId: vehicle.id,
         timestamp: new Date().getTime(),
-        velocity: vehicle.velocity,
+        speed: vehicle.velocity,
         lat: point[0],
         lng: point[1]
     };
@@ -97,8 +97,12 @@ function remoteControlServerSetup() {
             return;
         }
 
-        const change = JSON.parse(changeStr);
-        road.change(change);
+        try {
+            const change = JSON.parse(changeStr);
+            road.change(change);
+        } catch (err) {
+            console.log('invalid json');
+        }
     };
 
     const resetRoad = (newArgv) => {

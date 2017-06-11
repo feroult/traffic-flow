@@ -21,10 +21,8 @@ import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.coders.TableRowJsonCoder;
 import com.google.cloud.dataflow.sdk.io.PubsubIO;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
-import com.google.cloud.dataflow.sdk.transforms.Count;
-import com.google.cloud.dataflow.sdk.transforms.MapElements;
-import com.google.cloud.dataflow.sdk.transforms.RemoveDuplicates;
-import com.google.cloud.dataflow.sdk.transforms.SimpleFunction;
+import com.google.cloud.dataflow.sdk.transforms.*;
+import com.google.cloud.dataflow.sdk.transforms.DoFn.RequiresWindowAccess;
 import com.google.cloud.dataflow.sdk.transforms.windowing.*;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
@@ -57,13 +55,12 @@ public class TrafficFlow {
         Pipeline p = Pipeline.create(options);
 
         PCollection<TableRow> input = createInput(p, options);
-        PCollection<TableRow> window24hours = create24hoursWindow(input);
-        PCollection<TableRow> window5minutes = create5minutesWindow(input);
-
-        createVehicleFeed(input, options);
-        createRoadCounter(window24hours, "24_HOURS", options);
-        createRoadCounter(window5minutes, "5_MINUTES", options);
-        createStretchFeed(window5minutes, options);
+//        PCollection<TableRow> window24hours = create24hoursWindow(input);
+//        PCollection<TableRow> window5minutes = create5minutesWindow(input);
+//        createVehicleFeed(input, options);
+//        createRoadCounter(window24hours, "24_HOURS", options);
+//        createRoadCounter(window5minutes, "5_MINUTES", options);
+        createStretchFeed(input, options);
 
         p.run();
     }
@@ -86,9 +83,10 @@ public class TrafficFlow {
     private static PCollection<TableRow> create5minutesWindow(PCollection<TableRow> input) {
         return input
                 .apply("5 minutes window", Window.<TableRow>into(FixedWindows.of(Duration.standardMinutes(5)))
-                        .triggering(AfterPane.elementCountAtLeast(1))
-                        .withAllowedLateness(Duration.ZERO)
-                        .accumulatingFiredPanes());
+                        .withAllowedLateness(Duration.ZERO));
+//                        .triggering(AfterPane.elementCountAtLeast(1))
+//                        .withAllowedLateness(Duration.ZERO)
+//                        .accumulatingFiredPanes());
     }
 
     private static void createVehicleFeed(PCollection<TableRow> input, CustomPipelineOptions options) {
@@ -115,17 +113,22 @@ public class TrafficFlow {
                         .withCoder(TableRowJsonCoder.of()));
     }
 
-    private static void createStretchFeed(PCollection<TableRow> window, CustomPipelineOptions options) {
-        PCollection<KV<Stretch, Long>> result = window
+    private static void createStretchFeed(PCollection<TableRow> input, CustomPipelineOptions options) {
+        input
                 .apply("mark stretches", MapElements.via(new MarkStretches()))
-                .apply(String.format("repeat trigger"), Window
-                        .<KV<Stretch, TableRow>>triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
-                                .plusDelayOf(Duration.standardSeconds(2))))
-                        .accumulatingFiredPanes())
-                .apply("count events", Count.perKey());
 
-        result
-                .apply("format stretch", MapElements.via(new FormatStretchInfo()))
+                .apply("window", Window.into(FixedWindows.of(Duration.standardMinutes(5))))
+                .apply("trigger", Window.<KV<Stretch, TableRow>>triggering(
+                        AfterWatermark.pastEndOfWindow()
+                                .withEarlyFirings(AfterProcessingTime.pastFirstElementInPane()
+                                        .plusDelayOf(Duration.standardSeconds(5)))
+                                .withLateFirings(AfterPane.elementCountAtLeast(1)))
+                        .accumulatingFiredPanes()
+                        .withAllowedLateness(Duration.standardSeconds(30)))
+
+                .apply("statistics", Combine.perKey(new StretchCombine()))
+                .apply("format stretch", ParDo.of(new FormatStretchInfoFn()))
+
                 .apply(PubsubIO.Write.named(String.format("stretch to PubSub"))
                         .topic(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic()))
                         .withCoder(TableRowJsonCoder.of()));
@@ -180,21 +183,56 @@ public class TrafficFlow {
         }
     }
 
-    private static class FormatStretchInfo extends SimpleFunction<KV<Stretch, Long>, TableRow> {
+    private static class FormatStretchInfoFn extends DoFn<KV<Stretch, TableRow>, TableRow> implements RequiresWindowAccess {
         @Override
-        public TableRow apply(KV<Stretch, Long> stretchInfo) {
+        public void processElement(ProcessContext c) throws Exception {
+            KV<Stretch, TableRow> stretchInfo = c.element();
+
             Stretch stretch = stretchInfo.getKey();
-            Long count = stretchInfo.getValue();
+            TableRow row = stretchInfo.getValue();
 
             TableRow result = new TableRow();
             result.set("type", "STRETCH");
+            result.set("maxTimestamp", c.window().maxTimestamp().toString());
             result.set("index", stretch.getIndex());
             result.set("fromLat", stretch.getFromLat());
             result.set("fromLng", stretch.getFromLng());
             result.set("toLat", stretch.getToLat());
             result.set("toLng", stretch.getToLng());
-            result.set("count", count);
-            return result;
+            result.set("path", stretch.getPathJson());
+
+            result.set("eventsCount", row.get("eventsCount"));
+            result.set("vehiclesCount", row.get("vehiclesCount"));
+            result.set("avgSpeed", row.get("avgSpeed"));
+
+            c.output(result);
+        }
+    }
+
+    private static class StretchCombine extends Combine.CombineFn<TableRow, StretchStatistics, TableRow> {
+        @Override
+        public StretchStatistics createAccumulator() {
+            return new StretchStatistics();
+        }
+
+        @Override
+        public StretchStatistics addInput(StretchStatistics statistics, TableRow row) {
+            statistics.add(row);
+            return statistics;
+        }
+
+        @Override
+        public StretchStatistics mergeAccumulators(Iterable<StretchStatistics> it) {
+            StretchStatistics merged = new StretchStatistics();
+            for (StretchStatistics statistics : it) {
+                merged.add(statistics);
+            }
+            return merged;
+        }
+
+        @Override
+        public TableRow extractOutput(StretchStatistics statistics) {
+            return statistics.format();
         }
     }
 }

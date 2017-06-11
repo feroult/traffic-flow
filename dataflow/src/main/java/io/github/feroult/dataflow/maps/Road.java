@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,7 +95,8 @@ public class Road {
 
     private int computeStretchIndex(double accSum) {
         int stretchIndex = (int) Math.ceil(accSum / (this.roadLength / totalStretches));
-        return (stretchIndex == 0 ? 1 : stretchIndex) - 1;
+        int adjustedIndex = (stretchIndex == 0 ? 1 : stretchIndex) - 1;
+        return adjustedIndex >= totalStretches ? totalStretches - 1 : adjustedIndex;
     }
 
     private List<Stretch> createStretches() {
@@ -103,18 +105,25 @@ public class Road {
         double stretchLength = roadLength / totalStretches;
 
         int currentStretch = 1;
-        LatLng from = segments.get(0).getLatLng();
+        List<LatLng> path = new ArrayList<>();
 
         for (Segment segment : segments) {
+            if (currentStretch > totalStretches) {
+                break;
+            }
 
-            if (segment.getNextSegment().getAccSum() >= currentStretch * stretchLength) {
+            path.add(segment.getLatLng());
+
+            while (segment.getNextSegment().getAccSum() >= currentStretch * stretchLength) {
                 LatLng to = segment.interpolate(currentStretch * stretchLength);
-                result.add(new Stretch(currentStretch++, from, to));
-                from = to;
+                path.add(to);
+                result.add(new Stretch(currentStretch++, path));
 
                 if (currentStretch > totalStretches) {
                     break;
                 }
+
+                path = new ArrayList<>(Arrays.asList(to));
             }
         }
 

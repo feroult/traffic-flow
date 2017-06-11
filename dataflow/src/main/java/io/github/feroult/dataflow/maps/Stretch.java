@@ -3,6 +3,8 @@ package io.github.feroult.dataflow.maps;
 import com.google.cloud.dataflow.sdk.coders.AvroCoder;
 import com.google.cloud.dataflow.sdk.coders.DefaultCoder;
 
+import java.util.List;
+
 @DefaultCoder(AvroCoder.class)
 public class Stretch implements Comparable<Stretch> {
 
@@ -12,13 +14,16 @@ public class Stretch implements Comparable<Stretch> {
 
     private LatLng to;
 
+    private List<LatLng> path;
+
     public Stretch() {
     }
 
-    public Stretch(int index, LatLng from, LatLng to) {
+    public Stretch(int index, List<LatLng> path) {
         this.index = index;
-        this.from = from;
-        this.to = to;
+        this.from = path.get(0);
+        this.to = path.get(path.size() - 1);
+        this.path = path;
     }
 
     public double getFromLat() {
@@ -60,4 +65,24 @@ public class Stretch implements Comparable<Stretch> {
         return index - o.index;
     }
 
+    public List<LatLng> getPath() {
+        return path;
+    }
+
+    public String getPathJson() {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        sb.append("[");
+        for (LatLng latLng : path) {
+            if (!first) sb.append(",");
+            else first = false;
+
+            sb.append("{");
+            sb.append("\"lat\":" + latLng.getLat() + ",");
+            sb.append("\"lng\":" + latLng.getLng());
+            sb.append("}");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

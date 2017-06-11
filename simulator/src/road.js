@@ -82,14 +82,12 @@ class Road {
 
         } while (index !== projectedIndex);
 
+
         if (vehicle.distance !== distance) {
             this._updateStretchIndex(vehicle, index);
-            vehicle.velocity = velocity;
-        } else {
-            if (vehicle.distance === 0) {
-                console.log('xxx', vehicle.id);
-            }
         }
+        vehicle.velocity = velocity;
+
 
         return distance;
     }
@@ -152,7 +150,11 @@ class Road {
     }
 
     reset() {
-        this.stretches = this.stretchesBackup.map(s => Object.assign({}, s));
+        for (let i = 0; i < this.stretches.length; i++) {
+            this.stretches[i].lanes = this.stretchesBackup[i].lanes;
+            this.stretches[i].velocity = this.stretchesBackup[i].velocity;
+        }
+
     }
 
     finish(cb) {

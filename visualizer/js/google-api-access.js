@@ -6,6 +6,7 @@ function initMap() {
         center: {lat: -23.164592, lng: -46.945691},
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
+    directions = new google.maps.DirectionsService();
 }
 
 function handleClientLoad() {
