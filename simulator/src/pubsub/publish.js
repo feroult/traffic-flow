@@ -23,12 +23,10 @@ function publish(argv, data) {
 }
 
 function log() {
-    if (isVerbose()) {
-        count++;
-        if (count == LOG_COUNT_BATCH) {
-            count = 0;
-            console.log(`${LOG_COUNT_BATCH} events.`);
-        }
+    count++;
+    if (count % LOG_COUNT_BATCH === 0) {
+        count = 0;
+        console.log(`${LOG_COUNT_BATCH} events.`);
     }
 }
 
