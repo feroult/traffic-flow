@@ -40,6 +40,8 @@ class Vehicle {
     }
 
     move() {
+        process.stdout.write('.');
+        
         const elapsedHours = ((new Date().getTime() - this.timestamp)) * this._fastForward() / 1000 / 60 / 60;
 
         this.time += elapsedHours;
