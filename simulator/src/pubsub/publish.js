@@ -1,6 +1,7 @@
 const pubsub = require('./client');
 
-const LOG_COUNT_BATCH = 100;
+const LOG_COUNT_BATCH = 500;
+let start = new Date().getTime();
 let count = 0;
 
 function publish(argv, data) {
@@ -25,8 +26,8 @@ function publish(argv, data) {
 function log() {
     count++;
     if (count % LOG_COUNT_BATCH === 0) {
-        count = 0;
-        console.log(`${LOG_COUNT_BATCH} events.`);
+        const elapsed = Math.floor((new Date().getTime() - start) / 1000);
+        console.log(`${LOG_COUNT_BATCH} events, ${elapsed}/s.`);
     }
 }
 
