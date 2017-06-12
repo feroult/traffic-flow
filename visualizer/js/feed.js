@@ -53,7 +53,7 @@ function executePull() {
             // addVehicleMarkers(messages);
             // printMessages(filter(messages, "ROAD_24_HOURS"), "day");
             // printMessages(filter(messages, "ROAD_5_MINUTES"), "instant");
-            printMessages(filter(messages, "STRETCH"), "stretch");
+            // printMessages(filter(messages, "STRETCH"), "stretch");
             addStretches(filter(messages, "STRETCH"));
             ackReceivedMessages(ackIds)
         } else {
