@@ -7,7 +7,7 @@ import com.google.cloud.dataflow.sdk.coders.DefaultCoder;
 import java.util.HashSet;
 
 @DefaultCoder(AvroCoder.class)
-public class StretchStatistics {
+public class StretchInfo {
 
     private int count = 0;
 
@@ -15,7 +15,7 @@ public class StretchStatistics {
 
     private HashSet<String> vehicleIds;
 
-    public StretchStatistics() {
+    public StretchInfo() {
         this.vehicleIds = new HashSet<>();
     }
 
@@ -25,10 +25,10 @@ public class StretchStatistics {
         vehicleIds.add(row.get("vehicleId").toString());
     }
 
-    public void add(StretchStatistics statistics) {
-        count += statistics.count;
-        speedSum += statistics.speedSum;
-        vehicleIds.addAll(statistics.vehicleIds);
+    public void add(StretchInfo info) {
+        count += info.count;
+        speedSum += info.speedSum;
+        vehicleIds.addAll(info.vehicleIds);
     }
 
     public TableRow format() {

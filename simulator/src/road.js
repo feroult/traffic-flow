@@ -64,10 +64,6 @@ class Road {
 
             velocity = stretch.computeVelocity(targetVelocity, `index=${index}`);
 
-            if (velocity < 20) {
-                console.log('slow', vehicle.id, velocity, index);
-            }
-
             const delta = velocity * hours;
 
             projectedIndex = this.getStretchIndex(distance + delta);

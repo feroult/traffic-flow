@@ -117,16 +117,16 @@ public class TrafficFlow {
         input
                 .apply("mark stretches", MapElements.via(new MarkStretches()))
 
-                .apply("window", Window.into(FixedWindows.of(Duration.standardMinutes(5))))
+                .apply("window", Window.into(FixedWindows.of(Duration.standardMinutes(1))))
                 .apply("trigger", Window.<KV<Stretch, TableRow>>triggering(
                         AfterWatermark.pastEndOfWindow()
                                 .withEarlyFirings(AfterProcessingTime.pastFirstElementInPane()
-                                        .plusDelayOf(Duration.standardSeconds(5)))
+                                        .plusDelayOf(Duration.standardSeconds(2)))
                                 .withLateFirings(AfterPane.elementCountAtLeast(1)))
                         .accumulatingFiredPanes()
                         .withAllowedLateness(Duration.standardSeconds(30)))
 
-                .apply("statistics", Combine.perKey(new StretchCombine()))
+                .apply("info", Combine.perKey(new StretchCombine()))
                 .apply("format stretch", ParDo.of(new FormatStretchInfoFn()))
 
                 .apply(PubsubIO.Write.named(String.format("stretch to PubSub"))
@@ -209,30 +209,30 @@ public class TrafficFlow {
         }
     }
 
-    private static class StretchCombine extends Combine.CombineFn<TableRow, StretchStatistics, TableRow> {
+    private static class StretchCombine extends Combine.CombineFn<TableRow, StretchInfo, TableRow> {
         @Override
-        public StretchStatistics createAccumulator() {
-            return new StretchStatistics();
+        public StretchInfo createAccumulator() {
+            return new StretchInfo();
         }
 
         @Override
-        public StretchStatistics addInput(StretchStatistics statistics, TableRow row) {
-            statistics.add(row);
-            return statistics;
+        public StretchInfo addInput(StretchInfo info, TableRow row) {
+            info.add(row);
+            return info;
         }
 
         @Override
-        public StretchStatistics mergeAccumulators(Iterable<StretchStatistics> it) {
-            StretchStatistics merged = new StretchStatistics();
-            for (StretchStatistics statistics : it) {
-                merged.add(statistics);
+        public StretchInfo mergeAccumulators(Iterable<StretchInfo> it) {
+            StretchInfo merged = new StretchInfo();
+            for (StretchInfo info : it) {
+                merged.add(info);
             }
             return merged;
         }
 
         @Override
-        public TableRow extractOutput(StretchStatistics statistics) {
-            return statistics.format();
+        public TableRow extractOutput(StretchInfo info) {
+            return info.format();
         }
     }
 }
