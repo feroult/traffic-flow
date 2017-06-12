@@ -1,6 +1,8 @@
 const CAR = 'M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z';
 let count = 0;
 
+let infoWindow;
+
 function addVehicleMarkers(events) {
 
     const now = new Date();
@@ -91,11 +93,9 @@ function addStretches(events) {
 }
 
 function addStretch(event) {
-    let infoWindow;
+    // let infoWindow;
     if (!infoWindow) {
-        infoWindow = new google.maps.InfoWindow({
-            content: '<h1>hello</h1>'
-        });
+        infoWindow = new google.maps.InfoWindow();
     }
 
     const key = event.index + '';
@@ -108,60 +108,84 @@ function addStretch(event) {
             return new google.maps.LatLng(latLng.lat, latLng.lng);
         });
 
-        const options = getStretchPolylineOptions(event);
+        stretches[key] = {
+            avgSpeed: event.avgSpeed,
+            vehiclesCount: event.vehiclesCount
+        };
+
+        const options = getStretchPolylineOptions(key);
         options.path = path;
 
         const polyline = new google.maps.Polyline(options);
+        stretches[key].polyline = polyline;
 
         polyline.setMap(map);
 
-        stretches[key] = {
-            polyline: polyline
-        };
 
         google.maps.event.addListener(map, 'zoom_changed', function () {
             console.log('zoom', map.getZoom());
             polyline.setOptions({strokeWeight: getStrokeWeight()});
         });
 
+
+        stretches[key].infoWindow = new google.maps.InfoWindow({
+            position: path[0],
+            content: getInfo(key)
+        });
+
         polyline.addListener('click', function () {
-            infoWindow.close();
-            infoWindow.setPosition(path[0]);
-            infoWindow.open(map, polyline);
+            stretches[key].infoWindow.open(map, polyline);
         });
 
         polyline.addListener('mouseover', function () {
-            polyline.setOptions({strokeColor: getStretchColor(event, true)});
+            polyline.setOptions({strokeColor: getStretchColor(key, true)});
         });
 
         polyline.addListener('mouseout', function () {
-            polyline.setOptions({strokeColor: getStretchColor(event, false)});
+            polyline.setOptions({strokeColor: getStretchColor(key, false)});
         });
 
     } else {
-        stretch.polyline.setOptions(getStretchPolylineOptions(event));
+        stretch.avgSpeed = event.avgSpeed;
+        stretch.vehiclesCount = event.vehiclesCount;
+        stretch.polyline.setOptions(getStretchPolylineOptions(key));
+        stretch.infoWindow.setContent(getInfo(key));
     }
 }
 
 
-function getStretchPolylineOptions(event) {
+function getInfo(key) {
+    const stretch = stretches[key];
+    const content = `<div style="padding: 10px; font-size: 24px; text-align: right;">` +
+        `<p>Avg Speed: <strong><span style="font-size: 28px">${stretch.avgSpeed.toFixed(2)}</span></strong></p>` +
+        `<p>Vehicles: <strong><span style="font-size: 28px">${stretch.vehiclesCount}</span></strong></p>` +
+        `</div>`;
+    console.log('x', content);
+    return content;
+}
+
+function getStretchPolylineOptions(key) {
     return {
-        strokeColor: getStretchColor(event),
-        strokeOpacity: getStrokeOpacity(event),
+        strokeColor: getStretchColor(key),
+        strokeOpacity: getStrokeOpacity(key),
         strokeWeight: getStrokeWeight()
     };
-};
+}
 
-function getStretchColor(event, highlight) {
-    if (event.avgSpeed < 50) {
+function getStretchColor(key, highlight) {
+    const stretch = stretches[key];
+
+    if (stretch.avgSpeed < 50) {
         return highlight ? "#FF0000" : "#AA0000";
     } else {
         return highlight ? "#AAAAAA" : "#666666";
     }
 }
 
-function getStrokeOpacity(event) {
-    if (event.avgSpeed < 50) {
+function getStrokeOpacity(key) {
+    const stretch = stretches[key];
+
+    if (stretch.avgSpeed < 50) {
         return 1;
     } else {
         return 1;
