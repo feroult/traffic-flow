@@ -1,4 +1,4 @@
-#!/usr/bin/env node --max-old-space-size=7000
+#!/usr/bin/env node
 
 const dnode = require('dnode');
 const fs = require('fs');
