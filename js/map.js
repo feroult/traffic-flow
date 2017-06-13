@@ -124,7 +124,7 @@ function addStretch(event) {
 
         google.maps.event.addListener(map, 'zoom_changed', function () {
             console.log('zoom', map.getZoom());
-            polyline.setOptions({strokeWeight: getStrokeWeight()});
+            polyline.setOptions({strokeWeight: getStrokeWeight(key)});
         });
 
 
@@ -149,18 +149,29 @@ function addStretch(event) {
         stretch.avgSpeed = event.avgSpeed;
         stretch.vehiclesCount = event.vehiclesCount;
         stretch.polyline.setOptions(getStretchPolylineOptions(key));
+        stretch.polyline.setMap(map);
         stretch.infoWindow.setContent(getInfo(key));
     }
+
+    stretches[key].timeoutId = createStretchTimeout(key);
 }
 
+function createStretchTimeout(key) {
+    const stretch = stretches[key];
+    if (stretch.timeoutId) {
+        clearTimeout(stretch.timeoutId);
+    }
+    return setTimeout(function () {
+        stretch.polyline.setMap(null);
+    }, 30000);
+}
 
 function getInfo(key) {
     const stretch = stretches[key];
     const content = `<div style="padding: 10px; font-size: 24px; text-align: right;">` +
-        `<p>Avg Speed: <strong><span style="font-size: 28px">${stretch.avgSpeed.toFixed(2)}</span></strong></p>` +
         `<p>Vehicles: <strong><span style="font-size: 28px">${stretch.vehiclesCount}</span></strong></p>` +
+        `<p>Avg Speed: <strong><span style="font-size: 28px">${stretch.avgSpeed.toFixed(2)}</span></strong></p>` +
         `</div>`;
-    console.log('x', content);
     return content;
 }
 
@@ -168,31 +179,27 @@ function getStretchPolylineOptions(key) {
     return {
         strokeColor: getStretchColor(key),
         strokeOpacity: getStrokeOpacity(key),
-        strokeWeight: getStrokeWeight()
+        strokeWeight: getStrokeWeight(key)
     };
 }
 
 function getStretchColor(key, highlight) {
     const stretch = stretches[key];
 
-    if (stretch.avgSpeed < 50) {
-        return highlight ? "#FF0000" : "#AA0000";
-    } else {
-        return highlight ? "#AAAAAA" : "#666666";
-    }
+    const number = stretch.avgSpeed <= 5 ? 0 : stretch.avgSpeed > 100 ? 100 : stretch.avgSpeed;
+    return numberToColorHsl(number);
 }
 
 function getStrokeOpacity(key) {
-    const stretch = stretches[key];
-
-    if (stretch.avgSpeed < 50) {
-        return 1;
-    } else {
-        return 1;
-    }
+    return 1;
 }
 
-function getStrokeWeight() {
+function getStrokeWeight(key) {
+    const stretch = stretches[key];
+    return Math.max((stretch.vehiclesCount / 100), 1) * getStrokeWeightByZoom();
+}
+
+function getStrokeWeightByZoom() {
     const zoom = map.getZoom();
     if (zoom < 11) {
         return 2;
@@ -211,3 +218,34 @@ function getStrokeWeight() {
     }
     return 14;
 }
+
+function hslToRgb(h, s, l) {
+    var r, g, b;
+    if (s == 0) {
+        r = g = b = l; // achromatic
+    } else {
+        function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+}
+
+function numberToColorHsl(i) {
+    var hue = i * 1.2 / 360;
+    var rgb = hslToRgb(hue, 1, .5);
+    return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+}
+

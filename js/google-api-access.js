@@ -3,6 +3,7 @@ let auth2; // The Sign-In object.
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10,
+        styles: MAP_STYLE,
         center: {lat: -23.164592, lng: -46.945691},
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
