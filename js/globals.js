@@ -8,6 +8,7 @@ let concurrentPulls;
 let lastPullSuccess;
 let allAckIds;
 let duplicates;
+let showVehicles = false;
 
 let vehicles;
 let elements;

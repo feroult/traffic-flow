@@ -1,4 +1,4 @@
-const VEHICLES_FADEOUT_PERIOD = 15000; // start fading all points, including head points, after 15 sec
+const VEHICLES_FADEOUT_PERIOD = 30000; // start fading all points, including head points, after 15 sec
 
 const PROJECT_ID = 'traffic-flow-app';
 const TOPIC_ID = 'projects/traffic-flow-app/topics/visualizer';

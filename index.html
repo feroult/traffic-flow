@@ -33,6 +33,25 @@
 
             <button id="start">Start</button>
             <button id="stop">Stop</button>
+
+            <div class="counters">
+                <div class="day">
+                    <div class="label">Total Vehicles</div>
+                    <div id="day-counter" class="value">0</div>
+                </div>
+
+                <div class="current">
+                    <div class="label">Current</div>
+                    <div id="current-counter" class="value">0</div>
+                </div>
+            </div>
+
+            <div class="options">
+                <label class="switch">
+                    <input id="show-vehicles" onchange="toggleVehicles(this)" type="checkbox">
+                    <div class="slider round"></div>
+                </label>
+            </div>
         </div>
         <div id="map"></div>
     </section>
