@@ -51,17 +51,19 @@ public class TrafficFlowPipeline {
 
     private static void createRoadFeed(PCollection<TableRow> input, CustomPipelineOptions options) {
         input
-                .apply("window (road)", Window.into(FixedWindows.of(Duration.standardDays(365))))
-                .apply("trigger (road)", Window.<TableRow>triggering(
-                        AfterWatermark.pastEndOfWindow()
-                                .withEarlyFirings(AfterProcessingTime.pastFirstElementInPane()
-                                        .plusDelayOf(Duration.standardSeconds(10)))
-                                .withLateFirings(AfterPane.elementCountAtLeast(1)))
-                        .accumulatingFiredPanes()
-                        .withAllowedLateness(Duration.ZERO))
+                .apply("window (road)", Window.<TableRow>into(FixedWindows.of(Duration.standardDays(365)))
+                        .triggering(AfterPane.elementCountAtLeast(1))
+                        .withAllowedLateness(Duration.ZERO)
+                        .accumulatingFiredPanes())
 
                 .apply("vehicle id", MapElements.via(new ExtractVehicleId()))
                 .apply("remove duplicates", RemoveDuplicates.create())
+
+                .apply("trigger (road)", Window.<String>triggering(
+                        Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane()
+                                .plusDelayOf(Duration.standardSeconds(2))))
+                        .accumulatingFiredPanes())
+
                 .apply("count vehicles", Count.<String>globally().withoutDefaults())
 
                 .apply("format road", MapElements.via(new FormatRoadInfo()))

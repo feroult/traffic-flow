@@ -48,14 +48,19 @@ function executePull() {
         lastPullSuccess = Date.now();
 
         if (hasMessages(response)) {
+            const start = new Date().getTime();
+
             const messages = parseMessages(response);
             const ackIds = parseAckIds(response);
-            // addVehicleMarkers(messages);
             // printMessages(filter(messages, "ROAD_24_HOURS"), "day");
             // printMessages(filter(messages, "ROAD_5_MINUTES"), "instant");
             // printMessages(filter(messages, "STRETCH"), "stretch");
-            addStretches(filter(messages, "STRETCH"));
+            updateVehicles(filter(messages, "VEHICLE"));
+            updateRoad(filter(messages, "ROAD"));
+            updateStretches(filter(messages, "STRETCH"));
             ackReceivedMessages(ackIds)
+
+            console.log('processed', messages.length, 'message(s) in', (new Date().getTime() - start), 'ms')
         } else {
             nextPull();
         }

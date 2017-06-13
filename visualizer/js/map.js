@@ -3,14 +3,17 @@ let count = 0;
 
 let infoWindow;
 
-function addVehicleMarkers(events) {
+function updateVehicles(events) {
+    if (!showVehicles) {
+        return;
+    }
 
     const now = new Date();
 
     for (let i = 0, l = events.length; i < l; i++) {
         const event = events[i];
         if (vehicles.hasOwnProperty(event.vehicleId)) {
-            const latLng = new google.maps.LatLng(event.location.lat, event.location.lng);
+            const latLng = new google.maps.LatLng(event.lat, event.lng);
             var marker = vehicles[event.vehicleId];
 
             if (!marker.getMap()) {
@@ -34,7 +37,7 @@ function addVehicleMarkers(events) {
             };
 
             const marker = new google.maps.Marker({
-                position: event.location,
+                position: new google.maps.LatLng(event.lat, event.lng),
                 icon: icon,
                 map: map
             });
@@ -72,7 +75,19 @@ function clearOldElements() {
     elements = newElements;
 }
 
-setInterval(clearOldElements, 15000);
+setInterval(clearOldElements, VEHICLES_FADEOUT_PERIOD);
+
+function toggleVehicles(e) {
+    showVehicles = e.checked;
+    if (!showVehicles) {
+        for (let i = 0, l = elements.length; i < l; i++) {
+            elements[i].marker.setMap(null);
+        }
+        vehicles = {};
+        elements = [];
+    }
+
+}
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -83,9 +98,19 @@ function getRandomColor() {
     return color;
 }
 
+// road
+
+function updateRoad(events) {
+    if (!events.length) {
+        return;
+    }
+    const event = events[events.length - 1];
+    document.getElementById('day-counter').innerHTML = event.count;
+}
+
 // stretches
 
-function addStretches(events) {
+function updateStretches(events) {
     for (let i = 0, l = events.length; i < l; i++) {
         addStretch(events[i]);
     }
@@ -100,7 +125,7 @@ function addStretch(event) {
     const key = event.index + '';
 
     const stretch = stretches[key];
-    console.log('refreshing stretch:', key);
+    // console.log('refreshing stretch:', key);
 
     if (!stretch) {
         const path = JSON.parse(event.path).map(function (latLng) {
