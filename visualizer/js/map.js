@@ -67,7 +67,7 @@ function clearOldElements() {
         return now - el.timestamp <= VEHICLES_FADEOUT_PERIOD
     });
 
-    console.log('clear', count, elements.length, old.length, newElements.length);
+    // console.log('clear', count, elements.length, old.length, newElements.length);
 
     elements = newElements;
 }
@@ -85,7 +85,6 @@ function getRandomColor() {
 
 // stretches
 
-
 function addStretches(events) {
     for (let i = 0, l = events.length; i < l; i++) {
         addStretch(events[i]);
@@ -101,7 +100,7 @@ function addStretch(event) {
     const key = event.index + '';
 
     const stretch = stretches[key];
-    console.log('refreshing', key);
+    console.log('refreshing stretch:', key);
 
     if (!stretch) {
         const path = JSON.parse(event.path).map(function (latLng) {
@@ -121,12 +120,9 @@ function addStretch(event) {
 
         polyline.setMap(map);
 
-
         google.maps.event.addListener(map, 'zoom_changed', function () {
-            console.log('zoom', map.getZoom());
             polyline.setOptions({strokeWeight: getStrokeWeight(key)});
         });
-
 
         stretches[key].infoWindow = new google.maps.InfoWindow({
             position: path[0],
