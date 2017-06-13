@@ -14,6 +14,8 @@ let vehicles;
 let elements;
 let stretches;
 
+let currentVehicles;
+
 function resetGlobals() {
     concurrentPulls = 0;
     allAckIds = {};
@@ -21,6 +23,7 @@ function resetGlobals() {
     vehicles = {};
     elements = [];
     stretches = {};
+    currentVehicles = undefined;
 }
 
 resetGlobals();
