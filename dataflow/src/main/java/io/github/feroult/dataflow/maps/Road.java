@@ -83,11 +83,8 @@ public class Road {
             }
         }
 
-        if (accSum == roadLength) {
-            Segment last = segments.get(this.segments.size() - 1);
-            if (last.distanceFromStart(lat, lng) > 0.00005) {
-                return null;
-            }
+        if (accSum >= roadLength) {
+            return this.stretches.get(totalStretches - 1);
         }
 
         return this.stretches.get(computeStretchIndex(accSum));

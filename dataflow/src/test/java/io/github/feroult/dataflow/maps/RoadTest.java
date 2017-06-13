@@ -3,7 +3,6 @@ package io.github.feroult.dataflow.maps;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class RoadTest {
 
@@ -70,8 +69,8 @@ public class RoadTest {
         assertEquals(3, road.getStretchFor(-23.01046, -47.0908).getIndex());
         assertEquals(100, road.getStretchFor(-23.51321, -46.68018).getIndex());
 
-        assertNull(road.getStretchFor(-23.513407, -46.679968));
-        assertNull(road.getStretchFor(-23.488927, -46.687221));
+        assertEquals(100, road.getStretchFor(-23.513407, -46.679968).getIndex());
+        assertEquals(100, road.getStretchFor(-23.488927, -46.687221).getIndex());
     }
 
 }

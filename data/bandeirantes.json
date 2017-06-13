@@ -2,26 +2,26 @@
   "length": 71.32534361053114,
   "stretches": {
     "count": 1000,
-    "lanes": 5,
+    "lanes": 3,
     "velocity": 120,
     "custom": [
       {
         "from": 0.112,
         "to": 0.125,
         "lanes": 6,
-        "velocity": 30
+        "velocity": 20
       },
       {
         "from": 0.655,
         "to": 0.664,
         "lanes": 6,
-        "velocity": 30
+        "velocity": 20
       },
       {
         "from": 0.935,
         "to": 1,
         "lanes": 2,
-        "velocity": 90
+        "velocity": 50
       }
     ]
   },

@@ -106,6 +106,12 @@ function updateRoad(events) {
     }
     const event = events[events.length - 1];
     document.getElementById('day-counter').innerHTML = event.count;
+
+    if (currentVehicles === undefined) {
+        currentVehicles = event.count;
+    } else {
+        document.getElementById('current-counter').innerHTML = (event.count - currentVehicles) + '';
+    }
 }
 
 // stretches

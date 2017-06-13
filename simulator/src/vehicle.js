@@ -49,7 +49,7 @@ class Vehicle {
         this.emitter && this.emitter(this);
 
         if (this.distance + 0.00001 >= this.road.length) {
-            console.log(this.id, 'Exit road.');
+            process.stdout.write('x');
             this.road.removeVehicle(this);
         } else {
             this.scheduleNextMove();

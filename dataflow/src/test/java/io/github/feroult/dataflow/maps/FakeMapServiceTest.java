@@ -2,12 +2,12 @@ package io.github.feroult.dataflow.maps;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 public class FakeMapServiceTest {
 
     @Test
     public void testLoad() {
-        assertNull(FakeMapService.getStretchFor(0, 0));
+        assertEquals(1, FakeMapService.getStretchFor(-22.99792, -47.10328).getIndex());
     }
 }
