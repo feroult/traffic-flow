@@ -11,6 +11,8 @@ class Road {
         this.simulationId = shortid.generate();
         this.vehiclesCount = 0;
         this.vehicles = {};
+        this.vehiclesInOrder = [];
+        this.exited = false;
         this.stretchesLength = attrs.length / attrs.stretches.length;
         this.stretches = attrs.stretches.map(strech => {
             strech.length = this.stretchesLength;
@@ -28,11 +30,15 @@ class Road {
     }
 
     moveVehicles() {
-        for (let vehicleId in this.vehicles) {
-            if (this.vehicles.hasOwnProperty(vehicleId)) {
-                const vehicle = this.vehicles[vehicleId];
-                vehicle.move();
-            }
+        for (let i = 0, l = this.vehiclesInOrder.length; i < l; i++) {
+            const vehicle = this.vehiclesInOrder[i];
+            vehicle.move();
+        }
+        if (this.exited) {
+            this.vehiclesInOrder = this.vehiclesInOrder.filter(function (v) {
+                return !v.exited;
+            })
+            this.exited = false;
         }
     }
 
@@ -124,12 +130,15 @@ class Road {
     addVehicle(vehicle) {
         this.vehiclesCount++;
         this.vehicles[vehicle.id] = vehicle;
+        this.vehiclesInOrder.push(vehicle);
         vehicle.enter(this);
     }
 
     removeVehicle(vehicle) {
         this.vehiclesCount--;
         delete this.vehicles[vehicle.id];
+        vehicle.exited = true;
+        this.exited = true;
         if (this.vehiclesCount == 0) {
             this.finishCb && this.finishCb();
         }
