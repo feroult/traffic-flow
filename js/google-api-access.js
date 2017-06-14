@@ -53,11 +53,8 @@ function logError(err) {
 }
 
 function updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-        console.log('logged');
-    } else {
-        console.log('not logged');
-    }
+    logged = isSignedIn;
+    configureButtons();
 }
 
 function signIn() {
@@ -65,5 +62,7 @@ function signIn() {
 }
 
 function signOut() {
-    auth2.signOut();
+    stop(function () {
+        auth2.signOut();
+    });
 }

@@ -1,3 +1,4 @@
+let logged = false;
 let authPromise;
 let map;
 let directions;
