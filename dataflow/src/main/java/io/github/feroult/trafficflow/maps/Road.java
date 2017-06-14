@@ -1,4 +1,4 @@
-package io.github.feroult.dataflow.maps;
+package io.github.feroult.trafficflow.maps;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

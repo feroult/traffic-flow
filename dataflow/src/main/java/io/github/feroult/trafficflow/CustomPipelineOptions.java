@@ -14,36 +14,31 @@
  * the License.
  */
 
-package io.github.feroult.dataflow.utils;
+package io.github.feroult.trafficflow;
 
-import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
-import com.google.cloud.dataflow.sdk.options.Default;
-import com.google.cloud.dataflow.sdk.options.Description;
-import com.google.cloud.dataflow.sdk.options.Validation;
+import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Validation;
 
 public interface CustomPipelineOptions extends DataflowPipelineOptions {
-    @Description("ProjectId where data source topic lives")
     @Default.String("traffic-flow-app")
     @Validation.Required
     String getSourceProject();
 
     void setSourceProject(String value);
 
-    @Description("TopicId of source topic")
     @Default.String("events")
     @Validation.Required
     String getSourceTopic();
 
     void setSourceTopic(String value);
 
-    @Description("ProjectId where data sink topic lives")
     @Default.String("traffic-flow-app")
     @Validation.Required
     String getSinkProject();
 
     void setSinkProject(String value);
 
-    @Description("TopicId of sink topic")
     @Default.String("visualizer")
     @Validation.Required
     String getSinkTopic();

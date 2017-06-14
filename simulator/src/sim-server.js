@@ -35,6 +35,7 @@ function emitter(vehicle) {
     vehicle.segmentIndex = info.segmentIndex;
 
     const event = {
+        type: 'VEHICLE',
         simulationId: road.simulationId,
         vehicleId: vehicle.id,
         timestamp: new Date().getTime(),

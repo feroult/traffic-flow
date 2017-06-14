@@ -134,7 +134,7 @@ function addStretch(event) {
     // console.log('refreshing stretch:', key);
 
     if (!stretch) {
-        const path = JSON.parse(event.path).map(function (latLng) {
+        const path = event.path.map(function (latLng) {
             return new google.maps.LatLng(latLng.lat, latLng.lng);
         });
 

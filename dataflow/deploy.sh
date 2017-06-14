@@ -1,6 +1,9 @@
 #!/bin/sh
-
-mvn exec:java -Dexec.mainClass="io.github.feroult.dataflow.TrafficFlowPipeline"    \
-                     -e -Dexec.args="--project=traffic-flow-app --sinkProject=traffic-flow-app  \
-                     --stagingLocation=gs://traffic-flow-app --runner=DataflowPipelineRunner \
-                     --streaming=true --numWorkers=3 --maxNumWorkers=5 --zone=us-east1-c"
+java -jar build/libs/xptoz-all-1.0.jar \
+ --project=traffic-flow-app \
+ --sinkProject=traffic-flow-app \
+ --zone=us-east1-c \
+ --streaming \
+ --stagingLocation=gs://traffic-flow-app/staging \
+ --runner=DataflowRunner \
+ --numWorkers=3 --maxNumWorkers=5

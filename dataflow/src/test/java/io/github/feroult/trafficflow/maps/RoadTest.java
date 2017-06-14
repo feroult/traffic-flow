@@ -1,4 +1,4 @@
-package io.github.feroult.dataflow.maps;
+package io.github.feroult.trafficflow.maps;
 
 import org.junit.Test;
 
