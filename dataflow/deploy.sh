@@ -1,5 +1,5 @@
 #!/bin/sh
-java -jar build/libs/xptoz-all-1.0.jar \
+java -jar build/libs/dataflow-all-1.0.jar \
  --project=traffic-flow-app \
  --sinkProject=traffic-flow-app \
  --zone=us-east1-c \

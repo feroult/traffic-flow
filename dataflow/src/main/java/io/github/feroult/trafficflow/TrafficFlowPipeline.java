@@ -105,8 +105,8 @@ public class TrafficFlowPipeline {
                         .withAllowedLateness(Duration.standardSeconds(30)))
 
                 .apply("combine", Combine.perKey(new StretchCombineFn()))
-                .apply("format stretch", ParDo.of(new FormatStretchInfoFn()))
 
+                .apply("format stretches", ParDo.of(new FormatStretchInfoFn()))
                 .apply("stretches to PubSub", PubsubIO.writeStrings().to(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic())));
     }
 
