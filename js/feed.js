@@ -54,7 +54,7 @@ function executePull() {
             const ackIds = parseAckIds(response);
             // printMessages(filter(messages, "ROAD_24_HOURS"), "day");
             // printMessages(filter(messages, "ROAD_5_MINUTES"), "instant");
-            // printMessages(filter(messages, "STRETCH"), "stretch");
+            // printMessages(filter(messages, "VEHICLE"), "stretch");
             updateVehicles(filter(messages, "VEHICLE"));
             updateRoad(filter(messages, "ROAD"));
             updateStretches(filter(messages, "STRETCH"));
