@@ -196,8 +196,8 @@ function createStretchTimeout(key) {
 function getInfo(key) {
     const stretch = stretches[key];
     const content = `<div style="padding: 10px; font-size: 24px; text-align: right;">` +
-        `<p>Vehicles: <strong><span style="font-size: 28px">${stretch.vehiclesCount}</span></strong></p>` +
-        `<p>Avg Speed: <strong><span style="font-size: 28px">${stretch.avgSpeed.toFixed(2)}</span></strong></p>` +
+        `<p>Vehicles <strong><span style="font-size: 28px">${stretch.vehiclesCount}</span></strong></p>` +
+        `<p>Avg Speed <strong><span style="font-size: 28px">${stretch.avgSpeed.toFixed(2)}</span></strong></p>` +
         `</div>`;
     return content;
 }
