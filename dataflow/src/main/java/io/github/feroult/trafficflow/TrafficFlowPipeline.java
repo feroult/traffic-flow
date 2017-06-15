@@ -56,7 +56,6 @@ public class TrafficFlowPipeline {
     }
 
     private static PCollection<Event> createInput(Pipeline pipeline, CustomPipelineOptions options) {
-
         return pipeline
                 .apply("from PubSub", PubsubIO.readStrings().fromTopic(sourceTopic(options)))
                 .apply("parse event", ParDo.of(new ParseEventFn()));
