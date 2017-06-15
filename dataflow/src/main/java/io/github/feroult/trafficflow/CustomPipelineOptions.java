@@ -44,4 +44,10 @@ public interface CustomPipelineOptions extends DataflowPipelineOptions {
     String getSinkTopic();
 
     void setSinkTopic(String value);
+
+    @Default.String("traffic-flow-app:demo.events")
+    @Validation.Required
+    String getBigQueryTable();
+
+    void setBigQueryTable(String value);
 }

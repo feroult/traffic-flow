@@ -1,7 +1,7 @@
 package io.github.feroult.trafficflow.fns;
 
-import io.github.feroult.trafficflow.model.Event;
-import io.github.feroult.trafficflow.model.StretchAccumulator;
+import io.github.feroult.trafficflow.models.Event;
+import io.github.feroult.trafficflow.models.StretchAccumulator;
 import org.apache.beam.sdk.transforms.Combine;
 
 public class StretchCombineFn extends Combine.CombineFn<Event, StretchAccumulator, StretchAccumulator> {

@@ -1,4 +1,4 @@
-package io.github.feroult.trafficflow.model;
+package io.github.feroult.trafficflow.models;
 
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;

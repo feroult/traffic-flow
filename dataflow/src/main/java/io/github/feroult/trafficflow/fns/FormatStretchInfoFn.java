@@ -1,7 +1,7 @@
 package io.github.feroult.trafficflow.fns;
 
 import com.google.gson.Gson;
-import io.github.feroult.trafficflow.model.StretchAccumulator;
+import io.github.feroult.trafficflow.models.StretchAccumulator;
 import io.github.feroult.trafficflow.maps.LatLng;
 import io.github.feroult.trafficflow.maps.Stretch;
 import org.apache.beam.sdk.transforms.DoFn;

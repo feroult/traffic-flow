@@ -3,11 +3,13 @@ package io.github.feroult.trafficflow;
 import com.google.api.services.bigquery.model.TableRow;
 import io.github.feroult.trafficflow.fns.*;
 import io.github.feroult.trafficflow.maps.Stretch;
-import io.github.feroult.trafficflow.model.Event;
+import io.github.feroult.trafficflow.models.Event;
+import io.github.feroult.trafficflow.models.SchemaFor;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.CoderRegistry;
 import org.apache.beam.sdk.coders.SerializableCoder;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.TableDestination;
 import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
@@ -37,7 +39,7 @@ public class TrafficFlowPipeline {
         createVehicleFeed(events, options);
         createRoadFeed(events, options);
         createStretchFeed(events, options);
-//        crateBackupSink(events, options);
+        crateBackupFeed(events, options);
 
         pipeline.run();
     }
@@ -45,13 +47,23 @@ public class TrafficFlowPipeline {
     private static Pipeline createPipeline(CustomPipelineOptions options) {
         Pipeline p = Pipeline.create(options);
         CoderRegistry registry = p.getCoderRegistry();
+        registry.registerCoderProvider(AvroCoder.getCoderProvider());
         registry.registerCoderForClass(TableDestination.class, SerializableCoder.of(TableDestination.class));
         registry.registerCoderForClass(TableRow.class, TableRowJsonCoder.of());
-        registry.registerCoderProvider(AvroCoder.getCoderProvider());
         return p;
     }
 
-    private static void crateBackupSink(PCollection<TableRow> input, CustomPipelineOptions options) {
+    private static void crateBackupFeed(PCollection<Event> events, CustomPipelineOptions options) {
+        events
+                .apply("window (BigQuery)",
+                        Window.into(FixedWindows.of(Duration.standardMinutes(1))))
+
+                .apply("create table row", ParDo.of(new EventToTableRowFn()))
+                .apply("write to BigQuery", BigQueryIO.writeTableRows()
+                        .to(options.getBigQueryTable())
+                        .withSchema(SchemaFor.event())
+                        .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
+                        .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
 
     }
 
