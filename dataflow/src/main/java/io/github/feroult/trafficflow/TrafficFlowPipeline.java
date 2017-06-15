@@ -56,18 +56,16 @@ public class TrafficFlowPipeline {
     }
 
     private static PCollection<Event> createInput(Pipeline pipeline, CustomPipelineOptions options) {
-        PubsubIO.Read<String> io = PubsubIO.readStrings()
-                .fromTopic(String.format("projects/%s/topics/%s", options.getSourceProject(), options.getSourceTopic()));
 
         return pipeline
-                .apply("from PubSub", io)
+                .apply("from PubSub", PubsubIO.readStrings().fromTopic(sourceTopic(options)))
                 .apply("parse event", ParDo.of(new ParseEventFn()));
     }
 
     private static void createVehicleFeed(PCollection<Event> events, CustomPipelineOptions options) {
         events
                 .apply("format vehicles", ParDo.of(new FormatVehiclesFn()))
-                .apply("vehicles to PubSub", PubsubIO.writeStrings().to(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic())));
+                .apply("vehicles to PubSub", PubsubIO.writeStrings().to(sinkTopic(options)));
     }
 
     private static void createRoadFeed(PCollection<Event> events, CustomPipelineOptions options) {
@@ -88,7 +86,7 @@ public class TrafficFlowPipeline {
                 .apply("count vehicles", count())
 
                 .apply("format road", ParDo.of(new FormatRoadFn()))
-                .apply("road to PubSub", PubsubIO.writeStrings().to(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic())));
+                .apply("road to PubSub", PubsubIO.writeStrings().to(sinkTopic(options)));
     }
 
     private static void createStretchFeed(PCollection<Event> events, CustomPipelineOptions options) {
@@ -107,7 +105,15 @@ public class TrafficFlowPipeline {
                 .apply("combine", Combine.perKey(new StretchCombineFn()))
 
                 .apply("format stretches", ParDo.of(new FormatStretchInfoFn()))
-                .apply("stretches to PubSub", PubsubIO.writeStrings().to(String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic())));
+                .apply("stretches to PubSub", PubsubIO.writeStrings().to(sinkTopic(options)));
+    }
+
+    private static String sourceTopic(CustomPipelineOptions options) {
+        return String.format("projects/%s/topics/%s", options.getSourceProject(), options.getSourceTopic());
+    }
+
+    private static String sinkTopic(CustomPipelineOptions options) {
+        return String.format("projects/%s/topics/%s", options.getSinkProject(), options.getSinkTopic());
     }
 
     private static Combine.Globally<String, Long> count() {
