@@ -39,7 +39,7 @@ public class TrafficFlowPipeline {
         createVehicleFeed(events, options);
         createRoadFeed(events, options);
         createStretchFeed(events, options);
-        crateBackupFeed(events, options);
+        createBackupFeed(events, options);
 
         pipeline.run();
     }
@@ -53,7 +53,7 @@ public class TrafficFlowPipeline {
         return p;
     }
 
-    private static void crateBackupFeed(PCollection<Event> events, CustomPipelineOptions options) {
+    private static void createBackupFeed(PCollection<Event> events, CustomPipelineOptions options) {
         events
                 .apply("window (BigQuery)",
                         Window.into(FixedWindows.of(Duration.standardMinutes(1))))
