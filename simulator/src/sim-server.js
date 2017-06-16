@@ -21,11 +21,12 @@ const road = new Road(bandeirantes);
 let intervalId = setInterval(addVehicles, argv.interval / getFastForward());
 addVehicles();
 
-function moveVehicles() {
-    road.moveVehicles();
-    setTimeout(moveVehicles, argv.sleep / getFastForward())
-}
-moveVehicles();
+
+// function moveVehicles() {
+//     road.moveVehicles();
+//     setTimeout(moveVehicles, getRelativeSleep())
+// }
+road.moveVehicles(getRelativeSleep);
 
 function emitter(vehicle) {
 
@@ -151,6 +152,10 @@ function getSleep() {
 
 function getFastForward() {
     return argv['fast-forward'];
+}
+
+function getRelativeSleep() {
+    return getSleep() / getFastForward();
 }
 
 function isVerbose() {

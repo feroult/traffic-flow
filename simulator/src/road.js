@@ -29,17 +29,47 @@ class Road {
         return Math.floor(distance / this.stretchesLength);
     }
 
-    moveVehicles() {
-        for (let i = 0, l = this.vehiclesInOrder.length; i < l; i++) {
-            const vehicle = this.vehiclesInOrder[i];
-            vehicle.move();
+    moveVehicles(sleepFn) {
+        const self = this;
+
+        const groups = Math.min(10, self.vehiclesInOrder.length);
+        const groupSleep = sleepFn() / groups;
+        let groupIndex = 0;
+
+        const vehicles = self.vehiclesInOrder.slice();
+
+        let vehiclesByGroup = Math.ceil(vehicles.length / groups);
+
+        function moveGroup() {
+            const start = groupIndex * vehiclesByGroup;
+            const end = Math.min(vehicles.length, (groupIndex + 1) * vehiclesByGroup);
+
+            // console.log('start, end', start, end, groups);
+
+            for (let i = start; i < end; i++) {
+                const vehicle = vehicles[i];
+                vehicle.move();
+            }
+
+            if (++groupIndex < groups) {
+                setTimeout(moveGroup, groupSleep);
+                return;
+            }
+
+            if (self.exited) {
+                self.vehiclesInOrder = self.vehiclesInOrder.filter(function (v) {
+                    return !v.exited;
+                });
+                self.exited = false;
+            }
+
+            setTimeout(function () {
+                self.moveVehicles(sleepFn)
+            }, 1);
+
         }
-        if (this.exited) {
-            this.vehiclesInOrder = this.vehiclesInOrder.filter(function (v) {
-                return !v.exited;
-            })
-            this.exited = false;
-        }
+
+        moveGroup();
     }
 
     moveVehicleTo(vehicle, elapsedHours) {
@@ -53,7 +83,7 @@ class Road {
         let distance = vehicle.distance;
         let hours = elapsedHours;
 
-        let stretch, index, projectedIndex, velocity;
+        let stretch, index, projectedIndex, velocity = 0;
 
         do {
             index = this.getStretchIndex(distance);
