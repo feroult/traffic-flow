@@ -31,6 +31,7 @@ class Road {
 
     moveVehicles(sleepFn) {
         const self = this;
+        const nextTime = new Date().getTime() + sleepFn();
 
         const groups = Math.min(10, self.vehiclesInOrder.length);
         const groupSleep = sleepFn() / groups;
@@ -63,9 +64,10 @@ class Road {
                 self.exited = false;
             }
 
+            const waitTime = Math.max(1, nextTime - new Date().getTime());
             setTimeout(function () {
                 self.moveVehicles(sleepFn)
-            }, 1);
+            }, waitTime);
 
         }
 
