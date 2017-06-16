@@ -69,7 +69,9 @@ public class TrafficFlowPipeline {
 
     private static PCollection<Event> createInput(Pipeline pipeline, CustomPipelineOptions options) {
         return pipeline
-                .apply("from PubSub", PubsubIO.readStrings().fromTopic(sourceTopic(options)))
+                .apply("from PubSub", PubsubIO.readStrings()
+                        .fromTopic(sourceTopic(options))
+                        .withTimestampAttribute("timestamp"))
                 .apply("parse event", ParDo.of(new ParseEventFn()));
     }
 
@@ -84,7 +86,8 @@ public class TrafficFlowPipeline {
                 .apply("vehicle id", ParDo.of(new ExtractVehicleIdFn()))
 
                 .apply("window (road)", Window.<String>into(FixedWindows.of(Duration.standardDays(365)))
-                        .triggering(AfterPane.elementCountAtLeast(1))
+                        .triggering(AfterProcessingTime.pastFirstElementInPane()
+                                .plusDelayOf(Duration.standardSeconds(3)))
                         .withAllowedLateness(Duration.ZERO)
                         .accumulatingFiredPanes())
 

@@ -11,6 +11,17 @@ function publish(argv, data) {
 
     const topic = pubsub.topic(topicName);
 
+    const message = {
+        data: data,
+        attributes: {
+            timestamp: data.timestamp
+        }
+    };
+
+    const options = {
+        raw: true
+    };
+
     return topic.publish(data)
         .then((results) => {
             log();
