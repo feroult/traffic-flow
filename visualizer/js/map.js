@@ -105,12 +105,12 @@ function updateRoad(events) {
         return;
     }
     const event = events[events.length - 1];
-    document.getElementById('day-counter').innerHTML = event.count;
+    document.getElementById('day-counter').innerHTML = event.count.toLocaleString();
 
     if (currentVehicles === undefined) {
         currentVehicles = event.count;
     } else {
-        document.getElementById('current-counter').innerHTML = (event.count - currentVehicles) + '';
+        document.getElementById('current-counter').innerHTML = (event.count - currentVehicles).toLocaleString();
     }
 }
 
