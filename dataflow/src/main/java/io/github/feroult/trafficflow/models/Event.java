@@ -1,23 +1,31 @@
 package io.github.feroult.trafficflow.models;
 
+import org.apache.avro.reflect.Nullable;
 import org.apache.beam.sdk.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 
 @DefaultCoder(AvroCoder.class)
 public class Event {
 
+    @Nullable
     private String type;
 
+    @Nullable
     private String simulationId;
 
+    @Nullable
     private String vehicleId;
 
+    @Nullable
     private Long timestamp;
 
+    @Nullable
     private Double speed;
 
+    @Nullable
     private Double lat;
 
+    @Nullable
     private Double lng;
 
     public Event() {

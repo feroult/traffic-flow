@@ -19,13 +19,12 @@ bandeirantes.fastForward = getFastForward;
 const road = new Road(bandeirantes);
 
 let intervalId = setInterval(addVehicles, argv.interval / getFastForward());
-
+addVehicles();
 
 function moveVehicles() {
     road.moveVehicles();
     setTimeout(moveVehicles, argv.sleep / getFastForward())
 }
-
 moveVehicles();
 
 function emitter(vehicle) {
