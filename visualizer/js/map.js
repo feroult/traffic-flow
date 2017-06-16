@@ -190,7 +190,7 @@ function createStretchTimeout(key) {
     }
     return setTimeout(function () {
         stretch.polyline.setMap(null);
-    }, 30000);
+    }, 60000);
 }
 
 function getInfo(key) {
