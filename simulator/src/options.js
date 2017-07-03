@@ -24,6 +24,11 @@ function clearArgv(argv, withDefaults) {
 function parseOptions(withDefaults) {
 
     const options = {
+        'road': {
+            alias: 'r',
+            describe: 'road to simulate',
+            default: 'bandeirantes'
+        },
         'vehicles': {
             alias: 've',
             describe: 'vehicles arriving in each interval',

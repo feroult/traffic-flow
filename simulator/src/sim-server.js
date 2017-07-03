@@ -12,7 +12,7 @@ let argv = require('./options')(true);
 
 remoteControlServerSetup();
 
-const bandeirantes = Road.loadConfig('./data/bandeirantes');
+const bandeirantes = Road.loadConfig('./data/' + argv.road);
 bandeirantes.sleep = getSleep;
 bandeirantes.fastForward = getFastForward;
 
@@ -37,6 +37,7 @@ function emitter(vehicle) {
     const event = {
         type: 'VEHICLE',
         simulationId: road.simulationId,
+        roadId: argv.road,
         vehicleId: vehicle.id,
         timestamp: new Date().getTime(),
         speed: vehicle.velocity,

@@ -9,12 +9,12 @@ const googleMaps = require('@google/maps').createClient({
 const sq = x => x * x;
 const dist = (p1, p2) => Math.sqrt(sq(p1[0] - p2[0]) + sq(p1[1] - p2[1]));
 
-const extractData = cb => {
+const extractData = (options, cb) => {
     googleMaps.directions({
         // origin: 'Campinas',
         // destination: 'Sao Paulo',
-        origin: '-22.997975, -47.103343',
-        destination: '-23.513111, -46.680075',
+        origin: options.origin,
+        destination: options.destination,
         mode: 'driving'
     }, (err, response) => {
 
@@ -30,14 +30,30 @@ const extractData = cb => {
                 sum += i == 0 ? 0 : dist(decoded[i - 1], point);
                 return {point, accSum: sum};
             });
-            cb({points: parsed});
+            cb({
+                length: parsed[parsed.length - 1].accSum * 100,
+                stretches: {
+                    count: 1000,
+                    lanes: 3,
+                    velocity: 120,
+                    custom: [
+                        {
+                            from: 0.5,
+                            to: 0.513,
+                            lanes: 6,
+                            velocity: 20
+                        }
+                    ]
+                },
+                points: parsed
+            });
         } else {
             console.log('err', err);
         }
     });
 };
 
-const saveDataToFile = (file, cb) => extractData(parsed => {
+const saveDataToFile = (file, options, cb) => extractData(options, parsed => {
     fs.writeFileSync(file, JSON.stringify(parsed));
     cb(parsed);
 });
