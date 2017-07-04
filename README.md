@@ -30,5 +30,5 @@ __Visualizer__
 
 ### Credits
 
-    * [Luan Nico](https://github.com/luanpotter)
-    * [Matheus Martins](https://github.com/matheusmr13)
+ * [Luan Nico](https://github.com/luanpotter)
+ * [Matheus Martins](https://github.com/matheusmr13)
