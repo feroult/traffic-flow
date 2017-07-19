@@ -19,7 +19,7 @@ __Dataflow Pipeline__
 
 __Visualizer__
 
-1) Serve the folder `visualizar` using any webserver.
+1) Serve the folder `visualizer` using any webserver.
 2) Open it in your browser.
 
 ### Contents
