@@ -39,6 +39,9 @@ public class StretchAccumulator {
     }
 
     public Double getAvgSpeed() {
+        if (count == 0) {
+            return 0.0;
+        }
         return (speedSum / count);
     }
 }
