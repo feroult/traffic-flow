@@ -49,7 +49,7 @@ function emitter(vehicle) {
     }
 
     publish(argv, event).catch(err => {
-        // console.log('Error publishing', err);
+        console.log('Error publishing', err);
     });
 }
 

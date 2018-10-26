@@ -22,7 +22,9 @@ function publish(argv, data) {
         raw: true
     };
 
-    return topic.publish(data)
+    return topic
+        .publisher()
+        .publish(Buffer.from(JSON.stringify(data)))
         .then((results) => {
             log();
             const messageIds = results[0];

@@ -9,15 +9,15 @@
   "author": "Fernando Ultremare <feroult@gmail.com> (http://github.com/feroult)",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/pubsub": "^0.12.0",
-    "@google/maps": "^0.3.1",
-    "@mapbox/polyline": "^0.2.0",
+    "@google-cloud/pubsub": "^0.20.1",
+    "@google/maps": "^0.5.5",
+    "@mapbox/polyline": "^1.0.0",
     "dnode": "^1.2.2",
     "shortid": "^2.2.8",
-    "yargs": "^8.0.1"
+    "yargs": "^12.0.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.3.0"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
   }
 }
